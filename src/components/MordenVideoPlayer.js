@@ -13,13 +13,14 @@ import "./MordenVideoPlayer.css";
 import LoadingSpinner from "video-react/lib/components/LoadingSpinner";
 import Bezel from "video-react/lib/components/Bezel";
 import { isMobile } from "react-device-detect";
+import { VideoInfoService } from "../core/services/video-info.service";
 
 export default class MordenVideoPlayer extends Component {
 	constructor (props, context) {
 		super(props, context);
 		this.state = {
-			url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
-			url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
+			url1: "",
+			url2: "",
 			bookmark: [],
 			paused: true,
 			streamMode: false,
@@ -100,11 +101,17 @@ export default class MordenVideoPlayer extends Component {
 		}
 		this.line2.chartInstance.canvas.setAttribute("style", "");
 		this.player.subscribeToStateChange(this.handleStateChange.bind(this));
+		VideoInfoService.instance.getUserId()
+			.then(data => {this.setState({ userId: data })});
+		this.setState({
+			url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
+			url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
+		});
 	}
 
 	componentDidUpdate (prevProps, prevState) {
 		if (this.state.url1 !== prevState.url1) {
-			debugger;
+			// debugger;
 			this.player.seek(this.state.currentTime);
 			this.subplayer.seek(this.state.currentTime);
 		}
@@ -333,6 +340,9 @@ export default class MordenVideoPlayer extends Component {
 						<MDBBtn color="secondary" onClick={this.toggle}>Close</MDBBtn>
 					</MDBModalFooter>
 				</MDBModal>
+				<div>asdfasdfasdfasdfasdfasdf =
+					{this.state.userId}
+				</div>
 			</div>
 		);
 	}
