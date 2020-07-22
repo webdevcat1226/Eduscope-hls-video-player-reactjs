@@ -13,6 +13,7 @@ import "./MordenVideoPlayer.css";
 import LoadingSpinner from "video-react/lib/components/LoadingSpinner";
 import Bezel from "video-react/lib/components/Bezel";
 import { isMobile } from "react-device-detect";
+import { VideoInfoService } from "../core/services/video-info.service";
 
 export default class MordenVideoPlayer extends Component {
 	constructor (props, context) {
@@ -75,19 +76,19 @@ export default class MordenVideoPlayer extends Component {
 	};
 
 	resolutionToggle = () => {
-		debugger;
+		// debugger;
 		this.setState({
 			resolution: (this.state.resolution + 1) % 3,
 		});
 		if (this.state.resolution === 2 || this.state.resolution === 1) {
 			this.setState({
-				url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
-				url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
+				url1: "https://cloud.eduscope.lk/admin/2020-07-01/e602t_6744/e602t_6744_360.m3u8",
+				url2: "https://cloud.eduscope.lk/admin/2020-07-01/e602t_6745/e602t_6745_360.m3u8",
 			});
 		} else if (this.state.resolution === 0) {
 			this.setState({
-				url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206_low.m3u8",
-				url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207_low.m3u8",
+				url1: "https://cloud.eduscope.lk/admin/2020-07-01/e602t_6744/e602t_6744_144.m3u8",
+				url2: "https://cloud.eduscope.lk/admin/2020-07-01/e602t_6745/e602t_6745_144.m3u8",
 			});
 		} else {}
 	};
@@ -100,6 +101,8 @@ export default class MordenVideoPlayer extends Component {
 		}
 		this.line2.chartInstance.canvas.setAttribute("style", "");
 		this.player.subscribeToStateChange(this.handleStateChange.bind(this));
+
+		VideoInfoService.instance.getVideoUrls().then(result => console.log(result));
 
 		this.setState({
 			url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
