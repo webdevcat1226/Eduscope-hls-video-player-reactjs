@@ -118,6 +118,13 @@ export default class MordenVideoPlayer extends Component {
 					labels: dataLineLabels,
 					datasets: [
 						{
+							label: "My First dataset",
+							fill: true,
+							lineTension: 0.3,
+							borderWidth: 0,
+							backgroundColor: "rgba(225, 204,230, .3)",
+							pointBorderWidth: 0,
+							pointRadius: 0,
 							data: dataSets,
 						},
 					],
@@ -126,11 +133,19 @@ export default class MordenVideoPlayer extends Component {
 					labels: dataLineLabels,
 					datasets: [
 						{
+							label: "My First dataset",
+							fill: true,
+							lineTension: 0.3,
+							borderWidth: 0,
+							backgroundColor: "rgba(98,  182, 239,0.4)",
+							pointBorderWidth: 0,
+							pointRadius: 0,
 							data: dataSets,
 						},
 					],
 				},
 			});
+			console.log(this.state.dataLine1, this.state.dataLine2);
 		});
 
 		this.setState({
