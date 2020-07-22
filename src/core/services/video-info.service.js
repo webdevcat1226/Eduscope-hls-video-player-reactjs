@@ -27,7 +27,7 @@ export class VideoInfoService {
 	getVideoDataViews (video_id) {
 		return new Promise(resolve => {
 			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, { params: { key: "vhjgyu456dCT", type: "player_video_data_views", video_id: video_id } })
-				.then(axiosResult => resolve(axiosResult.data.views));
+				.then(axiosResult => resolve(axiosResult.data));
 		});
 	}
 }

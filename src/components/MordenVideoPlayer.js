@@ -14,6 +14,7 @@ import LoadingSpinner from "video-react/lib/components/LoadingSpinner";
 import Bezel from "video-react/lib/components/Bezel";
 import { isMobile } from "react-device-detect";
 import { VideoInfoService } from "../core/services/video-info.service";
+import { getVideoId } from "../common/utils/getVideoId.utils";
 
 export default class MordenVideoPlayer extends Component {
 	constructor (props, context) {
@@ -28,7 +29,7 @@ export default class MordenVideoPlayer extends Component {
 			resolution: 0,
 			currentTime: 0,
 			dataLine1: {
-				labels: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+				labels: [],
 				datasets: [
 					{
 						label: "My First dataset",
@@ -38,12 +39,12 @@ export default class MordenVideoPlayer extends Component {
 						backgroundColor: "rgba(225, 204,230, .3)",
 						pointBorderWidth: 0,
 						pointRadius: 0,
-						data: [0, 28, 48, 40, 19, 86, 27, 90, 28, 48, 40, 19, 86, 27, 90, 28, 48, 40, 19, 86, 27, 90, 28, 48, 40, 19, 86, 27, 90, 0],
+						data: [],
 					},
 				],
 			},
 			dataLine2: {
-				labels: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+				labels: [],
 				datasets: [
 					{
 						label: "My First dataset",
@@ -53,7 +54,7 @@ export default class MordenVideoPlayer extends Component {
 						backgroundColor: "rgba(98,  182, 239,0.4)",
 						pointBorderWidth: 0,
 						pointRadius: 0,
-						data: [0, 28, 48, 40, 19, 86, 27, 90, 28, 48, 40, 19, 86, 27, 90, 28, 48, 40, 19, 86, 27, 90, 28, 48, 40, 19, 86, 27, 90, 0],
+						data: [],
 					},
 				],
 			},
@@ -102,7 +103,35 @@ export default class MordenVideoPlayer extends Component {
 		this.line2.chartInstance.canvas.setAttribute("style", "");
 		this.player.subscribeToStateChange(this.handleStateChange.bind(this));
 
-		VideoInfoService.instance.getVideoUrls().then(result => console.log(result));
+		VideoInfoService.instance.getVideoUrls(getVideoId().encoded_video_id).then(result => {
+			console.log(result);
+		});
+		VideoInfoService.instance.getVideoDataViews(getVideoId().video_id).then(result => {
+			let dataLineLabels = [];
+			let dataSets = [];
+			result.views.map(item => {
+				dataLineLabels.push("");
+				dataSets.push(item);
+			});
+			this.setState({
+				dataLine1: {
+					labels: dataLineLabels,
+					datasets: [
+						{
+							data: dataSets,
+						},
+					],
+				},
+				dataLine2: {
+					labels: dataLineLabels,
+					datasets: [
+						{
+							data: dataSets,
+						},
+					],
+				},
+			});
+		});
 
 		this.setState({
 			url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
