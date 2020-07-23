@@ -22,6 +22,7 @@ export default class MordenVideoPlayer extends Component {
 		this.state = {
 			url1: "",
 			url2: "",
+			isVideoSourceLoaded: false,
 			bookmark: [],
 			paused: true,
 			streamMode: false,
@@ -80,18 +81,23 @@ export default class MordenVideoPlayer extends Component {
 		// debugger;
 		this.setState({
 			resolution: (this.state.resolution + 1) % 3,
+			isVideoSourceLoaded: false,
 		});
-		if (this.state.resolution === 2 || this.state.resolution === 1) {
-			this.setState({
-				url1: "https://cloud.eduscope.lk/admin/2020-07-01/e602t_6744/e602t_6744_360.m3u8",
-				url2: "https://cloud.eduscope.lk/admin/2020-07-01/e602t_6745/e602t_6745_360.m3u8",
-			});
-		} else if (this.state.resolution === 0) {
-			this.setState({
-				url1: "https://cloud.eduscope.lk/admin/2020-07-01/e602t_6744/e602t_6744_144.m3u8",
-				url2: "https://cloud.eduscope.lk/admin/2020-07-01/e602t_6745/e602t_6745_144.m3u8",
-			});
-		} else {}
+		VideoInfoService.instance.getVideoUrls(getVideoId().encoded_video_id).then(result => {
+			if (this.state.resolution === 2 || this.state.resolution === 1) {
+				this.setState({
+					url1: result.video_1_720_m3u8,
+					url2: result.video_2_720_m3u8,
+					isVideoSourceLoaded: true,
+				});
+			} else if (this.state.resolution === 0) {
+				this.setState({
+					url1: result.video_1_360_m3u8,
+					url2: result.video_2_360_m3u8,
+					isVideoSourceLoaded: true,
+				});
+			} else {}
+		});
 	};
 
 	componentDidMount () {
@@ -104,7 +110,11 @@ export default class MordenVideoPlayer extends Component {
 		this.player.subscribeToStateChange(this.handleStateChange.bind(this));
 
 		VideoInfoService.instance.getVideoUrls(getVideoId().encoded_video_id).then(result => {
-			console.log(result);
+			this.setState({
+				url1: result.video_1_720_m3u8,
+				url2: result.video_2_720_m3u8,
+				isVideoSourceLoaded: true,
+			});
 		});
 		VideoInfoService.instance.getVideoDataViews(getVideoId().video_id).then(result => {
 			let dataLineLabels = [];
@@ -145,12 +155,6 @@ export default class MordenVideoPlayer extends Component {
 					],
 				},
 			});
-			console.log(this.state.dataLine1, this.state.dataLine2);
-		});
-
-		this.setState({
-			url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
-			url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
 		});
 	}
 
@@ -306,6 +310,7 @@ export default class MordenVideoPlayer extends Component {
 							<HLSSource
 								isVideoChild
 								src={this.state.url2}
+								isVideoSourceLoaded={this.state.isVideoSourceLoaded}
 							/>
 							<BigPlayButton disabled />
 							<ControlBar disabled />
@@ -316,6 +321,7 @@ export default class MordenVideoPlayer extends Component {
 					<HLSSource
 						isVideoChild
 						src={this.state.url1}
+						isVideoSourceLoaded={this.state.isVideoSourceLoaded}
 					/>
 					<BigPlayButton position="center" />
 					<ControlBar autoHide={true}>
