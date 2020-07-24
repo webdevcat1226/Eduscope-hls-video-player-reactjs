@@ -107,7 +107,13 @@ export default class MordenVideoPlayer extends Component {
 			url1: tempUrl2,
 			url2: tempUrl1,
 		});
-		console.log("change channel");
+		if (this.state.paused) {
+			this.player.pause();
+			this.subplayer.pause();
+		} else {
+			this.player.play();
+			this.subplayer.play();
+		}
 	};
 
 	componentDidMount () {
