@@ -1,104 +1,108 @@
 @media ( max-width: 575px) {
-  .App .video-react .video-react-button {
-    width: 3em;
-  }
-  
-  .App .video-react .video-react-time-control {
-    padding-left: 0;
-    padding-right: 0;
-  }
-  
-  .App .btn {
-    padding: 0.2rem 0.2rem;
-  }
+    .App .video-react .video-react-button {
+        width: 3em;
+    }
+
+    .App .video-react .video-react-time-control {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .App .btn {
+        padding: 0.2rem 0.2rem;
+    }
 }
 
 video {
-  outline:none;
+    outline: none;
 }
 
 .video-react-control-bar > .chartContainer {
-  z-index: 2;
-  bottom: 150%;
-  position: absolute;
-  width: 60% !important;
-  left: 20%;
-  padding-left: 0;
-  padding-right: 0;
+    z-index: 2;
+    bottom: 150%;
+    position: absolute;
+    width: 60% !important;
+    left: 20%;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .video-react-control-bar > .chartContainer > canvas {
-  z-index: 2;
-  bottom: 150%;
-  position: absolute;
-  width: 100% !important;
-  padding-left: 0;
-  padding-right: 0;
+    z-index: 2;
+    bottom: 150%;
+    position: absolute;
+    width: 100% !important;
+    padding-left: 0;
+    padding-right: 0;
 }
 
-.video-react-control-bar>.bookmarkContainer {
-  z-index: 2;
-  bottom: calc(150% - 10px);
-  position: absolute;
-  height: 20px;
-  padding-left: 0;
-  padding-right: 0;
+.video-react-control-bar > .bookmarkContainer {
+    z-index: 2;
+    bottom: calc(150% - 10px);
+    position: absolute;
+    height: 20px;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .App .video-react-control-bar > .timeSlider {
-  z-index: 3;
-  position: absolute;
-  bottom: 100%;
-  left: 20%;
-  width: 60%;
-  margin-left: 0;
-  margin-right: 0;
+    z-index: 3;
+    position: absolute;
+    bottom: 100%;
+    left: 20%;
+    width: 60%;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .video-react .video-react-progress-control > .video-react-slider {
-  margin: 0 0;
+    margin: 0 0;
+}
+
+.video-react-control-bar {
+    font-family: Arial, Helvetica, sans-serif !important;
 }
 
 .fillButton {
-  flex: auto;
+    flex: auto;
 }
 
-.App .mainPlayer  .subSingleMode {
-  width: 100%;
-  height: 100%;
+.App .mainPlayer .subSingleMode {
+    width: 100%;
+    height: 100%;
 }
 
-.App .mainPlayer  .subMultiMode {
-  padding-top: 0 !important;
-  top: 0;
-  position: absolute;
-  width: 50% !important;
-  height: 100% !important;
-  z-index: 0;
+.App .mainPlayer .subMultiMode {
+    padding-top: 0 !important;
+    top: 0;
+    position: absolute;
+    width: 50% !important;
+    height: 100% !important;
+    z-index: 0;
 }
 
-.App .mainPlayer  .mainSingleMode {
-  left: 0 !important;
-  width: 100% !important;
+.App .mainPlayer .mainSingleMode {
+    left: 0 !important;
+    width: 100% !important;
 }
 
-.App .mainPlayer  .mainMultiMode {
-  left: 50% !important;
-  width: 50% !important;
+.App .mainPlayer .mainMultiMode {
+    left: 50% !important;
+    width: 50% !important;
 }
 
 .bookmarkButton {
-  z-index: 3;
-  position: absolute;
-  bottom: 100%;
-  padding: 0 0 !important;
-  font-size: 15px !important;
+    z-index: 3;
+    position: absolute;
+    bottom: 100%;
+    padding: 0 0 !important;
+    font-size: 15px !important;
 }
 
 #sub-video-container {
-  position: absolute;
-  top: 15%;
-  left: 75%;
-  width: 25%;
-  z-index: 9999 !important;
+    position: absolute;
+    top: 15%;
+    left: 75%;
+    width: 25%;
+    z-index: 9999 !important;
 }
