@@ -100,6 +100,15 @@ export default class MordenVideoPlayer extends Component {
 		});
 	};
 
+	changeChannel = () => {
+		const tempUrl1 = this.state.url1;
+		const tempUrl2 = this.state.url2;
+		this.setState({
+			url1: tempUrl2,
+			url2: tempUrl1,
+		});
+	};
+
 	componentDidMount () {
 		if (this.state.streamMode === false) {
 			this.player.video.video.classList.add("mainSingleMode");
@@ -298,7 +307,7 @@ export default class MordenVideoPlayer extends Component {
 					onPlay={() => this.subplayer.play()}
 					playsinline={true}
 				>
-					<div id="sub-video-container" className="ui-widget-content">
+					<div id="sub-video-container" className="ui-widget-content" ondblclick={this.changeChannel}>
 						<Player className={this.state.streamMode === false ? "subSingleMode" : "subMultiMode"}
 							ref={player => {
 								this.subplayer = player;
