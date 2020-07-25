@@ -15,6 +15,7 @@ import Bezel from "video-react/lib/components/Bezel";
 import { isMobile } from "react-device-detect";
 import { VideoInfoService } from "../core/services/video-info.service";
 import { getVideoId } from "../common/utils/getVideoId.utils";
+import classNames from "classnames";
 
 export default class MordenVideoPlayer extends Component {
 	constructor (props, context) {
@@ -22,6 +23,8 @@ export default class MordenVideoPlayer extends Component {
 		this.state = {
 			url1: "",
 			url2: "",
+			lowUrl1: "",
+			lowUrl2: "",
 			isVideoSourceLoaded: false,
 			bookmark: [],
 			paused: true,
@@ -29,6 +32,7 @@ export default class MordenVideoPlayer extends Component {
 			noteModal: false,
 			resolution: 0,
 			currentTime: 0,
+			isDisplayMainBigPlayButton: true,
 			dataLine1: {
 				labels: [],
 				datasets: [
@@ -87,13 +91,17 @@ export default class MordenVideoPlayer extends Component {
 			if (this.state.resolution === 2 || this.state.resolution === 1) {
 				this.setState({
 					url1: result.video_1_720_m3u8,
+					// url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
 					url2: result.video_2_720_m3u8,
+					// url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
 					isVideoSourceLoaded: true,
 				});
 			} else if (this.state.resolution === 0) {
 				this.setState({
 					url1: result.video_1_360_m3u8,
+					// url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206_low.m3u8",
 					url2: result.video_2_360_m3u8,
+					// url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207_low.m3u8",
 					isVideoSourceLoaded: true,
 				});
 			} else {}
@@ -107,13 +115,39 @@ export default class MordenVideoPlayer extends Component {
 			url1: tempUrl2,
 			url2: tempUrl1,
 		});
-		if (this.state.paused) {
-			this.player.pause();
-			this.subplayer.pause();
-		} else {
-			this.player.play();
-			this.subplayer.play();
-		}
+		console.log(this.state.paused);
+		console.log(this.state.dataLine1);
+		const tempState = {
+			url1: tempUrl2,
+			url2: tempUrl1,
+			isVideoSourceLoaded: this.state.isVideoSourceLoaded,
+			bookmark: this.state.bookmark,
+			paused: this.state.paused,
+			streamMode: this.state.streamMode,
+			noteModal: this.state.noteModal,
+			resolution: this.state.resolution,
+			currentTime: this.state.currentTime,
+			dataLine1: this.state.dataLine1,
+			dataLine2: this.state.dataLine2,
+		};
+
+		setTimeout(() => {
+			console.log(this.state.paused);
+			this.setState({
+				url1: tempState.url1,
+				url2: tempState.url2,
+				isVideoSourceLoaded: tempState.isVideoSourceLoaded,
+				bookmark: tempState.bookmark,
+				paused: tempState.paused,
+				streamMode: tempState.streamMode,
+				noteModal: tempState.noteModal,
+				resolution: tempState.resolution,
+				currentTime: tempState.currentTime,
+				dataLine1: tempState.dataLine1,
+				dataLine2: tempState.dataLine2,
+				isDisplayMainBigPlayButton: false,
+			});
+		}, 150);
 	};
 
 	componentDidMount () {
@@ -128,7 +162,13 @@ export default class MordenVideoPlayer extends Component {
 		VideoInfoService.instance.getVideoUrls(getVideoId().encoded_video_id).then(result => {
 			this.setState({
 				url1: result.video_1_720_m3u8,
+				// url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
 				url2: result.video_2_720_m3u8,
+				// url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
+				lowUrl1: video_1_360_m3u8,
+				// lowUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206_low.m3u8",
+				lowUrl2: video_2_360_m3u8,
+				// lowUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207_low.m3u8",
 				isVideoSourceLoaded: true,
 			});
 		});
@@ -180,6 +220,13 @@ export default class MordenVideoPlayer extends Component {
 			this.player.seek(this.state.currentTime);
 			this.subplayer.seek(this.state.currentTime);
 		}
+		if (this.state.paused) {
+			this.player.pause();
+			this.subplayer.pause();
+		} else {
+			this.player.play();
+			this.subplayer.play();
+		}
 	}
 
 	handleStateChange (state, prevState) {
@@ -215,7 +262,7 @@ export default class MordenVideoPlayer extends Component {
 
 
 	changeStreamMode () {
-		debugger;
+		// debugger;
 		if (this.state.streamMode === false) {
 			if (this.player.video.video.classList.contains("mainSingleMode")) {
 				this.player.video.video.classList.replace("mainSingleMode", "mainMultiMode");
@@ -304,7 +351,7 @@ export default class MordenVideoPlayer extends Component {
 
 	render () {
 		return (
-			<div>
+			<div id="main-video-container">
 				<Player className="mainPlayer"
 					ref={player => {
 						this.player = player;
@@ -314,12 +361,21 @@ export default class MordenVideoPlayer extends Component {
 					onPlay={() => this.subplayer.play()}
 					playsinline={true}
 				>
-					<div id="sub-video-container" className="ui-widget-content" onDoubleClick={this.changeChannel}>
-						<Player className={this.state.streamMode === false ? "subSingleMode" : "subMultiMode"}
+					<div id="sub-video-container"
+						className={classNames({
+							"ui-widget-content": true,
+							"subSingleMode": !this.state.streamMode,
+							"subMultiMode": this.state.streamMode,
+						})
+						}
+						onDoubleClick={this.changeChannel}
+					>
+						<Player className="subPlayer"
 							ref={player => {
 								this.subplayer = player;
 							}}
 							autoHide={true}
+							onPlay={() => this.player.play()}
 							aspectRatio={"16:9"}
 							playsinline={true}
 						>
@@ -339,7 +395,9 @@ export default class MordenVideoPlayer extends Component {
 						src={this.state.url1}
 						isVideoSourceLoaded={this.state.isVideoSourceLoaded}
 					/>
-					<BigPlayButton position="center" />
+					{
+						this.state.isDisplayMainBigPlayButton ? <BigPlayButton position="center" /> : <BigPlayButton disabled />
+					}
 					<ControlBar autoHide={true}>
 						<MDBContainer fluid className="chartContainer">
 							<Line className="viewChart" data={this.state.dataLine1} height={60} width={600} options={{ responsive: true, legend: false, scales: { xAxes: [{ display: false }], yAxes: [{ display: false }] } }}
