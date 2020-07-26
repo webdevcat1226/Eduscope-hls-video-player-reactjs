@@ -1,12 +1,12 @@
 import React from "react";
-import MordenVideoPlayer from "./components/MordenVideoPlayer";
+import ModernVideoPlayer from "./components/ModernVideoPlayer";
 import { MDBContainer } from "mdbreact";
 
 function App () {
 	return (
 		<div className="App">
 			<MDBContainer>
-				<MordenVideoPlayer />
+				<ModernVideoPlayer />
 			</MDBContainer>
 		</div>
 	);

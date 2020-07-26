@@ -9,7 +9,7 @@ import { MdSpeakerNotes } from "react-icons/md";
 import { Button } from "reactstrap";
 import { Line } from "react-chartjs-2";
 import { MDBContainer, MDBInput, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from "mdbreact";
-import "./MordenVideoPlayer.css";
+import "../components/ModernVideoPlayer.css";
 import LoadingSpinner from "video-react/lib/components/LoadingSpinner";
 import Bezel from "video-react/lib/components/Bezel";
 import { isMobile } from "react-device-detect";
@@ -17,7 +17,7 @@ import { VideoInfoService } from "../core/services/video-info.service";
 import { getVideoId } from "../common/utils/getVideoId.utils";
 import classNames from "classnames";
 
-export default class MordenVideoPlayer extends Component {
+export default class ModernVideoPlayer extends Component {
 	constructor (props, context) {
 		super(props, context);
 		this.state = {
@@ -196,7 +196,6 @@ export default class MordenVideoPlayer extends Component {
 			this.player.seek(this.state.currentTime);
 			this.subplayer.seek(this.state.currentTime);
 		}
-		console.log(this.state.dataLine1, this.state.dataLine2);
 	}
 
 	handleStateChange (state, prevState) {
@@ -279,14 +278,14 @@ export default class MordenVideoPlayer extends Component {
 	}
 
 	addBookmark (type, position) {
-		let bookmark = this.state.bookmark;
-		bookmark.push({ type, position });
-		this.setState({ bookmark });
+		const bookmark = this.state.bookmark;
+		this.setState({ bookmark: [...bookmark, { type, position }] });
 	}
 
 	addBookmarkImportant () {
 		const { player } = this.player.getState();
 		let width = 20 + 60 * player.currentTime / player.duration;
+		console.log(player.currentTime);
 		this.addBookmark("important", width + "%");
 	}
 
