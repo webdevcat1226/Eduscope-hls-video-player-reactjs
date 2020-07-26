@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { Button } from "reactstrap";
 import { BsFillStarFill, BsQuestionCircleFill, BsLayoutSplit } from "react-icons/bs";
 
-const ColoredLine = ({ bookmarkType, position, OnRemoveBookmark }) => {
+const ColoredLine = ({ bookmarkType, position, markedTime, OnJumpToMarkedPosition, OnRemoveBookmark }) => {
 	let className = "";
 	let bookmarkIcon;
 	if (bookmarkType === "important") {
@@ -18,7 +18,7 @@ const ColoredLine = ({ bookmarkType, position, OnRemoveBookmark }) => {
 	} else {}
 
 	return <div className={className} style={{ left: position }}>
-		<Button className="bookmarkButton" onDoubleClick={() => OnRemoveBookmark(bookmarkType, position)}>
+		<Button className="bookmarkButton" onClick={OnJumpToMarkedPosition(markedTime)} onDoubleClick={() => OnRemoveBookmark(bookmarkType, position)}>
 			{bookmarkIcon}
 		</Button>
 	</div>;
@@ -35,7 +35,7 @@ export default class BookmarkContainer extends Component {
 	render () {
 		return (
 			this.props.bookmark.map((bookmark, index) => (
-				<ColoredLine bookmarkType={bookmark.type} position={bookmark.position} OnRemoveBookmark={this.props.OnRemoveBookmark} />
+				<ColoredLine key={index} bookmarkType={bookmark.type} position={bookmark.position} markedTime={bookmark.markedTime} OnJumpToMarkedPosition={this.props.OnJumpToMarkedPosition} OnRemoveBookmark={this.props.OnRemoveBookmark} />
 			))
 		);
 	}
