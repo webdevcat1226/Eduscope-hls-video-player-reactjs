@@ -73,7 +73,7 @@ export default class MordenVideoPlayer extends Component {
 		this.addBookmarkQuestion = this.addBookmarkQuestion.bind(this);
 		this.sendNote = this.sendNote.bind(this);
 		this.onPlayToggle = this.onPlayToggle.bind(this);
-		this.removeBootmark = this.removeBootmark.bind(this);
+		this.removeBookMark = this.removeBookMark.bind(this);
 	}
 
 	toggle = () => {
@@ -196,6 +196,7 @@ export default class MordenVideoPlayer extends Component {
 			this.player.seek(this.state.currentTime);
 			this.subplayer.seek(this.state.currentTime);
 		}
+		console.log(this.state.dataLine1, this.state.dataLine2);
 	}
 
 	handleStateChange (state, prevState) {
@@ -302,7 +303,7 @@ export default class MordenVideoPlayer extends Component {
 		this.toggle();
 	}
 
-	removeBootmark (type, position) {
+	removeBookMark (type, position) {
 		let bookmark = this.state.bookmark;
 		let index = -1;
 		for (let i = 0; i < bookmark.length; i++) {
@@ -346,6 +347,7 @@ export default class MordenVideoPlayer extends Component {
 							autoHide={true}
 							aspectRatio={"16:9"}
 							playsinline={true}
+							muted
 						>
 							{
 								this.state.isVideoSourceLoaded && <HLSSource isVideoChild src={this.state.url2} />
@@ -373,7 +375,7 @@ export default class MordenVideoPlayer extends Component {
 								}}
 							/>
 						</MDBContainer>
-						<BookmarkContainer bookmark={this.state.bookmark} OnRemoveBookmark={this.removeBootmark} />
+						<BookmarkContainer bookmark={this.state.bookmark} OnRemoveBookmark={this.removeBookMark} />
 						<ProgressControl className="timeSlider"
 							ref={slider => {
 								this.timeSlider = slider;
@@ -392,7 +394,6 @@ export default class MordenVideoPlayer extends Component {
 						</ForwardButton>
 						<VolumeMenuButton vertical order={4} />
 						<Button className="fillButton" order={6}>
-
 						</Button>
 						<Button order={7} onClick={this.addBookmarkImportant}><BsFillStarFill /></Button>
 						<Button order={8} onClick={this.addBookmarkQuestion}><BsQuestionCircleFill /></Button>
