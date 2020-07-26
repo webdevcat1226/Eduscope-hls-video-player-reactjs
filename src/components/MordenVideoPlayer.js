@@ -34,7 +34,6 @@ export default class MordenVideoPlayer extends Component {
 			noteModal: false,
 			resolution: 0,
 			currentTime: 0,
-			isDisplayMainBigPlayButton: true,
 			dataLine1: {
 				labels: [],
 				datasets: [
@@ -87,8 +86,6 @@ export default class MordenVideoPlayer extends Component {
 		// debugger;
 		this.setState({
 			resolution: (this.state.resolution + 1) % 3,
-			isVideoSourceLoaded: true,
-			isDisplayMainBigPlayButton: false,
 		});
 
 		if (this.state.resolution === 2 || this.state.resolution === 1) {
@@ -107,41 +104,21 @@ export default class MordenVideoPlayer extends Component {
 	changeChannel = () => {
 		const tempUrl1 = this.state.url1;
 		const tempUrl2 = this.state.url2;
-		this.setState({
-			url1: tempUrl2,
-			url2: tempUrl1,
-		});
-		const tempState = {
-			url1: tempUrl2,
-			url2: tempUrl1,
-			isVideoSourceLoaded: this.state.isVideoSourceLoaded,
-			bookmark: this.state.bookmark,
-			paused: this.state.paused,
-			streamMode: this.state.streamMode,
-			noteModal: this.state.noteModal,
-			resolution: this.state.resolution,
-			currentTime: this.state.currentTime,
-			dataLine1: this.state.dataLine1,
-			dataLine2: this.state.dataLine2,
-		};
+		const tempHighUrl1 = this.state.highUrl1;
+		const tempHighUrl2 = this.state.highUrl2;
+		const tempLowUrl1 = this.state.lowUrl1;
+		const tempLowUrl2 = this.state.lowUrl2;
 
 		setTimeout(() => {
-			console.log(this.state.paused);
 			this.setState({
-				url1: tempState.url1,
-				url2: tempState.url2,
-				isVideoSourceLoaded: tempState.isVideoSourceLoaded,
-				bookmark: tempState.bookmark,
-				paused: tempState.paused,
-				streamMode: tempState.streamMode,
-				noteModal: tempState.noteModal,
-				resolution: tempState.resolution,
-				currentTime: tempState.currentTime,
-				dataLine1: tempState.dataLine1,
-				dataLine2: tempState.dataLine2,
-				isDisplayMainBigPlayButton: false,
+				url1: tempUrl2,
+				url2: tempUrl1,
+				highUrl1: tempHighUrl2,
+				highUrl2: tempHighUrl1,
+				lowUrl1: tempLowUrl2,
+				lowUrl2: tempLowUrl1,
 			});
-		}, 150);
+		}, 10);
 	};
 
 	componentDidMount () {
@@ -155,18 +132,18 @@ export default class MordenVideoPlayer extends Component {
 
 		VideoInfoService.instance.getVideoUrls(getVideoId().encoded_video_id).then(result => {
 			this.setState({
-				url1: result.video_1_720_m3u8,
-				// url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
-				url2: result.video_2_720_m3u8,
-				// url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
-				highUrl1: result.video_1_720_m3u8,
-				// highUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
-				highUrl2: result.video_2_720_m3u8,
-				// highUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
-				lowUrl1: result.video_1_360_m3u8,
-				// lowUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206_low.m3u8",
-				lowUrl2: result.video_2_360_m3u8,
-				// lowUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207_low.m3u8",
+				// url1: result.video_1_720_m3u8,
+				url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
+				// url2: result.video_2_720_m3u8,
+				url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
+				// highUrl1: result.video_1_720_m3u8,
+				highUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
+				// highUrl2: result.video_2_720_m3u8,
+				highUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
+				// lowUrl1: result.video_1_360_m3u8,
+				lowUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206_low.m3u8",
+				// lowUrl2: result.video_2_360_m3u8,
+				lowUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207_low.m3u8",
 				isVideoSourceLoaded: true,
 			});
 		});
@@ -361,11 +338,12 @@ export default class MordenVideoPlayer extends Component {
 					playsinline={true}
 				>
 					<div id="sub-video-container"
-						className={classNames({
-							"ui-widget-content": true,
-							"subSingleMode": !this.state.streamMode,
-							"subMultiMode": this.state.streamMode,
-						})
+						className={
+							classNames({
+								"ui-widget-content": true,
+								"subSingleMode": !this.state.streamMode,
+								"subMultiMode": this.state.streamMode,
+							})
 						}
 						onDoubleClick={this.changeChannel}
 					>
@@ -374,7 +352,6 @@ export default class MordenVideoPlayer extends Component {
 								this.subplayer = player;
 							}}
 							autoHide={true}
-							onPlay={() => this.player.play()}
 							aspectRatio={"16:9"}
 							playsinline={true}
 						>
@@ -394,9 +371,7 @@ export default class MordenVideoPlayer extends Component {
 						src={this.state.url1}
 						isVideoSourceLoaded={this.state.isVideoSourceLoaded}
 					/>
-					{
-						this.state.isDisplayMainBigPlayButton ? <BigPlayButton position="center" /> : <BigPlayButton disabled />
-					}
+					<BigPlayButton position="center" />
 					<ControlBar autoHide={true}>
 						<MDBContainer fluid className="chartContainer">
 							<Line className="viewChart" data={this.state.dataLine1} height={60} width={600} options={{ responsive: true, legend: false, scales: { xAxes: [{ display: false }], yAxes: [{ display: false }] } }}

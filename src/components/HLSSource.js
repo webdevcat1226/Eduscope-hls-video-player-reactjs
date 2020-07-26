@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import Hls from "hls.js";
 
 export default class HLSSource extends Component {
-	constructor (props, context) {
+	constructor(props, context) {
 		super(props, context);
 		this.hls = new Hls();
 	}
 
-	componentDidMount () {
+	componentDidMount() {
 		// `src` is the property get from this component
 		// `video` is the property insert from `Video` component
 		// `video` is the html5 video element
@@ -19,7 +19,7 @@ export default class HLSSource extends Component {
 		}
 	}
 
-	componentDidUpdate (prevProps, prevState) {
+	componentDidUpdate(prevProps, prevState) {
 		if (prevProps.src !== this.props.src) {
 			const { src, video } = this.props;
 			this.hls.loadSource(src);
@@ -31,7 +31,7 @@ export default class HLSSource extends Component {
 	}
 
 
-	componentWillUnmount () {
+	componentWillUnmount() {
 		// destroy hls video source
 		if (this.hls) {
 
@@ -39,7 +39,7 @@ export default class HLSSource extends Component {
 		}
 	}
 
-	render () {
+	render() {
 		return (
 			<source
 				src={this.props.src}
