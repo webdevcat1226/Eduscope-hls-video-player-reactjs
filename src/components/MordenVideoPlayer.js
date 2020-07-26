@@ -391,7 +391,9 @@ export default class MordenVideoPlayer extends Component {
 							<FaForward />
 						</ForwardButton>
 						<VolumeMenuButton vertical order={4} />
-						<Button className="fillButton" order={6}></Button>
+						<Button className="fillButton" order={6}>
+
+						</Button>
 						<Button order={7} onClick={this.addBookmarkImportant}><BsFillStarFill /></Button>
 						<Button order={8} onClick={this.addBookmarkQuestion}><BsQuestionCircleFill /></Button>
 						<Button order={9} onClick={this.toggle}><MdSpeakerNotes /></Button>
