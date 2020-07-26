@@ -86,6 +86,7 @@ export default class MordenVideoPlayer extends Component {
 		// debugger;
 		this.setState({
 			resolution: (this.state.resolution + 1) % 3,
+			isVideoSourceLoaded: true,
 		});
 
 		if (this.state.resolution === 2 || this.state.resolution === 1) {
@@ -109,16 +110,15 @@ export default class MordenVideoPlayer extends Component {
 		const tempLowUrl1 = this.state.lowUrl1;
 		const tempLowUrl2 = this.state.lowUrl2;
 
-		setTimeout(() => {
-			this.setState({
-				url1: tempUrl2,
-				url2: tempUrl1,
-				highUrl1: tempHighUrl2,
-				highUrl2: tempHighUrl1,
-				lowUrl1: tempLowUrl2,
-				lowUrl2: tempLowUrl1,
-			});
-		}, 10);
+		this.setState({
+			url1: tempUrl2,
+			url2: tempUrl1,
+			highUrl1: tempHighUrl2,
+			highUrl2: tempHighUrl1,
+			lowUrl1: tempLowUrl2,
+			lowUrl2: tempLowUrl1,
+			isVideoSourceLoaded: true,
+		});
 	};
 
 	componentDidMount () {
@@ -147,6 +147,7 @@ export default class MordenVideoPlayer extends Component {
 				isVideoSourceLoaded: true,
 			});
 		});
+
 
 		VideoInfoService.instance.getVideoDataViews(getVideoId().video_id).then(result => {
 			let dataLineLabels = [];
@@ -192,16 +193,8 @@ export default class MordenVideoPlayer extends Component {
 
 	componentDidUpdate (prevProps, prevState) {
 		if (this.state.url1 !== prevState.url1) {
-			// debugger;
 			this.player.seek(this.state.currentTime);
 			this.subplayer.seek(this.state.currentTime);
-		}
-		if (this.state.paused) {
-			this.player.pause();
-			this.subplayer.pause();
-		} else {
-			this.player.play();
-			this.subplayer.play();
 		}
 	}
 
@@ -238,7 +231,6 @@ export default class MordenVideoPlayer extends Component {
 
 
 	changeStreamMode () {
-		// debugger;
 		if (this.state.streamMode === false) {
 			if (this.player.video.video.classList.contains("mainSingleMode")) {
 				this.player.video.video.classList.replace("mainSingleMode", "mainMultiMode");
@@ -355,22 +347,18 @@ export default class MordenVideoPlayer extends Component {
 							aspectRatio={"16:9"}
 							playsinline={true}
 						>
-							<HLSSource
-								isVideoChild
-								src={this.state.url2}
-								isVideoSourceLoaded={this.state.isVideoSourceLoaded}
-							/>
+							{
+								this.state.isVideoSourceLoaded && <HLSSource isVideoChild src={this.state.url2} />
+							}
 							<BigPlayButton disabled />
 							<ControlBar disabled />
 							<LoadingSpinner disabled />
 							<Bezel disabled />
 						</Player>
 					</div>
-					<HLSSource
-						isVideoChild
-						src={this.state.url1}
-						isVideoSourceLoaded={this.state.isVideoSourceLoaded}
-					/>
+					{
+						this.state.isVideoSourceLoaded && <HLSSource isVideoChild src={this.state.url1} />
+					}
 					<BigPlayButton position="center" />
 					<ControlBar autoHide={true}>
 						<MDBContainer fluid className="chartContainer">

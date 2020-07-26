@@ -1,1 +1,0 @@
-export const selectUserVideoIdInfo = store => store.userVideoIdInfo;

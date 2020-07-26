@@ -5,13 +5,9 @@ import App from "./App";
 import "bootstrap/dist/css/bootstrap.css";
 import "video-react/dist/video-react.css";
 import * as serviceWorker from "./serviceWorker";
-import { Provider } from "react-redux";
-import store from "./store";
 
 ReactDOM.render(
-	<Provider store={store}>
-		<App />
-	</Provider>,
+	<App />,
 	document.getElementById("root"),
 );
 
