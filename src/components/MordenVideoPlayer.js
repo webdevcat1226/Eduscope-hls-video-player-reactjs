@@ -23,6 +23,8 @@ export default class MordenVideoPlayer extends Component {
 		this.state = {
 			url1: "",
 			url2: "",
+			highUrl1: "",
+			highUrl2: "",
 			lowUrl1: "",
 			lowUrl2: "",
 			isVideoSourceLoaded: false,
@@ -85,27 +87,21 @@ export default class MordenVideoPlayer extends Component {
 		// debugger;
 		this.setState({
 			resolution: (this.state.resolution + 1) % 3,
-			isVideoSourceLoaded: false,
+			isVideoSourceLoaded: true,
+			isDisplayMainBigPlayButton: false,
 		});
-		VideoInfoService.instance.getVideoUrls(getVideoId().encoded_video_id).then(result => {
-			if (this.state.resolution === 2 || this.state.resolution === 1) {
-				this.setState({
-					url1: result.video_1_720_m3u8,
-					// url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
-					url2: result.video_2_720_m3u8,
-					// url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
-					isVideoSourceLoaded: true,
-				});
-			} else if (this.state.resolution === 0) {
-				this.setState({
-					url1: result.video_1_360_m3u8,
-					// url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206_low.m3u8",
-					url2: result.video_2_360_m3u8,
-					// url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207_low.m3u8",
-					isVideoSourceLoaded: true,
-				});
-			} else {}
-		});
+
+		if (this.state.resolution === 2 || this.state.resolution === 1) {
+			this.setState({
+				url1: this.state.highUrl1,
+				url2: this.state.highUrl2,
+			});
+		} else if (this.state.resolution === 0) {
+			this.setState({
+				url1: this.state.lowUrl1,
+				url2: this.state.lowUrl2,
+			});
+		}
 	};
 
 	changeChannel = () => {
@@ -115,8 +111,6 @@ export default class MordenVideoPlayer extends Component {
 			url1: tempUrl2,
 			url2: tempUrl1,
 		});
-		console.log(this.state.paused);
-		console.log(this.state.dataLine1);
 		const tempState = {
 			url1: tempUrl2,
 			url2: tempUrl1,
@@ -165,13 +159,18 @@ export default class MordenVideoPlayer extends Component {
 				// url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
 				url2: result.video_2_720_m3u8,
 				// url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
-				lowUrl1: video_1_360_m3u8,
+				highUrl1: result.video_1_720_m3u8,
+				// highUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
+				highUrl2: result.video_2_720_m3u8,
+				// highUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
+				lowUrl1: result.video_1_360_m3u8,
 				// lowUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206_low.m3u8",
-				lowUrl2: video_2_360_m3u8,
+				lowUrl2: result.video_2_360_m3u8,
 				// lowUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207_low.m3u8",
 				isVideoSourceLoaded: true,
 			});
 		});
+
 		VideoInfoService.instance.getVideoDataViews(getVideoId().video_id).then(result => {
 			let dataLineLabels = [];
 			let dataSets = [];

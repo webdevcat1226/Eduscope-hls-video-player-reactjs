@@ -17,6 +17,10 @@ video {
     outline: none;
 }
 
+.video-react {
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+
 .video-react-control-bar > .chartContainer {
     z-index: 2;
     bottom: 150%;
