@@ -30,4 +30,62 @@ export class VideoInfoService {
 				.then(axiosResult => resolve(axiosResult.data));
 		});
 	}
+
+	sendAddBookmark (uid, video_id, bookmark_type, comment, video_time) {
+		return new Promise(resolve => {
+			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, {
+				params: {
+					key: "vhjgyu456dCT",
+					type: "add_bookmark",
+					uid,
+					video_id,
+					bookmark_type,
+					comment,
+					video_time,
+				},
+			});
+		});
+	}
+
+	sendRemoveBookmark (uid, video_id, bookmark_type, video_time) {
+		return new Promise(resolve => {
+			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, {
+				params: {
+					key: "vhjgyu456dCT",
+					type: "remove_bookmark",
+					uid,
+					video_id,
+					bookmark_type,
+					video_time,
+				},
+			});
+		});
+	}
+
+	sendUpdateBookmarkContent (uid, video_id, bookmark_type, comment, video_time) {
+		return new Promise(resolve => {
+			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, {
+				params: {
+					key: "vhjgyu456dCT",
+					type: "update_bookmark_comment",
+					uid,
+					video_id,
+					bookmark_type,
+					comment,
+					video_time,
+				},
+			});
+		});
+	}
+
+	getLastTenBookmarks () {
+		return new Promise(resolve => {
+			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, {
+				params: {
+					key: "vhjgyu456dCT",
+					type: "update_bookmark_comment",
+				},
+			});
+		});
+	}
 }

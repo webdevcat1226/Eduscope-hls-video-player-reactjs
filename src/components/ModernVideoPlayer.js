@@ -81,6 +81,17 @@ export default class ModernVideoPlayer extends Component {
 		this.setState({
 			noteModal: !this.state.noteModal,
 		});
+		setTimeout(() => {
+			if (this.state.noteModal) {
+				console.log("Memo bookmark modal opened");
+				this.player.pause();
+				this.subplayer.pause();
+			} else {
+				console.log("Memo bookmark modal closed");
+				this.player.play();
+				this.subplayer.play();
+			}
+		}, 10);
 	};
 
 	resolutionToggle = () => {
@@ -133,18 +144,18 @@ export default class ModernVideoPlayer extends Component {
 
 		VideoInfoService.instance.getVideoUrls(getVideoId().encoded_video_id).then(result => {
 			this.setState({
-				url1: result.video_1_720_m3u8,
-				// url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
-				url2: result.video_2_720_m3u8,
-				// url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
-				highUrl1: result.video_1_720_m3u8,
-				// highUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
-				highUrl2: result.video_2_720_m3u8,
-				// highUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
-				lowUrl1: result.video_1_360_m3u8,
-				// lowUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206_low.m3u8",
-				lowUrl2: result.video_2_360_m3u8,
-				// lowUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207_low.m3u8",
+				// url1: result.video_1_720_m3u8,
+				url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
+				// url2: result.video_2_720_m3u8,
+				url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
+				// highUrl1: result.video_1_720_m3u8,
+				highUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
+				// highUrl2: result.video_2_720_m3u8,
+				highUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
+				// lowUrl1: result.video_1_360_m3u8,
+				lowUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206_low.m3u8",
+				// lowUrl2: result.video_2_360_m3u8,
+				lowUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207_low.m3u8",
 				isVideoSourceLoaded: true,
 			});
 		});
@@ -407,8 +418,8 @@ export default class ModernVideoPlayer extends Component {
 						<VolumeMenuButton vertical order={4} />
 						<Button className="fillButton" order={6}>
 						</Button>
-						<Button order={7} onClick={this.addBookmarkImportant}><BsFillStarFill /></Button>
-						<Button order={8} onClick={this.addBookmarkQuestion}><BsQuestionCircleFill /></Button>
+						<Button order={7} title="Click here to add a bookmark" onClick={this.addBookmarkImportant}><BsFillStarFill /></Button>
+						<Button order={8} title="Click here to add a question mark" onClick={this.addBookmarkQuestion}><BsQuestionCircleFill /></Button>
 						<Button order={9} onClick={this.toggle}><MdSpeakerNotes /></Button>
 						<Button order={10} onClick={this.resolutionToggle}>
 							{this.state.resolution === 0 ? "Auto" : this.state.resolution === 1 ? "Low" : "High"}
