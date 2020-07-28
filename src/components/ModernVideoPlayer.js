@@ -222,6 +222,8 @@ export default class ModernVideoPlayer extends Component {
 			this.player.seek(this.state.currentTime);
 			this.subplayer.seek(this.state.currentTime);
 		}, 5000);
+
+		this.player.actions.toggleFullscreen = () => {console.log("prevent full screen video");};
 	}
 
 	componentDidUpdate (prevProps, prevState) {
@@ -299,7 +301,6 @@ export default class ModernVideoPlayer extends Component {
 	}
 
 	jumpToMarkedPosition (seconds) {
-		console.log("jumpToBookMarkFunction Called");
 		return () => {
 			this.player.pause();
 			this.subplayer.pause();
