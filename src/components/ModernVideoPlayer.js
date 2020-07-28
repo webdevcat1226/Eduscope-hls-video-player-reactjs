@@ -21,6 +21,9 @@ export default class ModernVideoPlayer extends Component {
 	constructor (props, context) {
 		super(props, context);
 		this.state = {
+			uid: "",
+			video_id: "",
+			encoded_video_id: "",
 			url1: "",
 			url2: "",
 			highUrl1: "",
@@ -142,6 +145,17 @@ export default class ModernVideoPlayer extends Component {
 		this.line2.chartInstance.canvas.setAttribute("style", "");
 		this.player.subscribeToStateChange(this.handleStateChange.bind(this));
 
+		this.setState({
+			video_id: getVideoId().video_id,
+			encoded_video_id: getVideoId().encoded_video_id,
+		});
+
+		VideoInfoService.instance.getUserId().then(result => {
+			this.setState({
+				uid: result,
+			});
+		});
+
 		VideoInfoService.instance.getVideoUrls(getVideoId().encoded_video_id).then(result => {
 			this.setState({
 				// url1: result.video_1_720_m3u8,
@@ -159,7 +173,6 @@ export default class ModernVideoPlayer extends Component {
 				isVideoSourceLoaded: true,
 			});
 		});
-
 
 		VideoInfoService.instance.getVideoDataViews(getVideoId().video_id).then(result => {
 			let dataLineLabels = [];
@@ -351,6 +364,7 @@ export default class ModernVideoPlayer extends Component {
 					aspectRatio={"16:9"}
 					autoHide={true}
 					onPlay={() => this.subplayer.play()}
+					onPause={() => this.subplayer.pause()}
 					playsinline={true}
 				>
 					<div id="sub-video-container"

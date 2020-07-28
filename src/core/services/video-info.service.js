@@ -43,7 +43,7 @@ export class VideoInfoService {
 					comment,
 					video_time,
 				},
-			});
+			}).then(axiosResult => resolve(axiosResult.data.result));
 		});
 	}
 
@@ -58,7 +58,7 @@ export class VideoInfoService {
 					bookmark_type,
 					video_time,
 				},
-			});
+			}).then(axiosResult => resolve(axiosResult.data.result));
 		});
 	}
 
@@ -74,7 +74,7 @@ export class VideoInfoService {
 					comment,
 					video_time,
 				},
-			});
+			}).then(axiosResult => resolve(axiosResult.data.result));
 		});
 	}
 
@@ -83,9 +83,9 @@ export class VideoInfoService {
 			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, {
 				params: {
 					key: "vhjgyu456dCT",
-					type: "update_bookmark_comment",
+					type: "bookmark_data_set",
 				},
-			});
+			}).then(axiosResult => resolve(axiosResult.data));
 		});
 	}
 }
