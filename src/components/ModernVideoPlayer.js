@@ -419,14 +419,14 @@ export default class ModernVideoPlayer extends Component {
 							}}
 						/>
 						<PlaybackRateMenuButton rates={[16, 8, 4, 2, 1.2, 1, 0.8]} order={0} />
-						<ForwardButton onChangeCurrentTime={this.changeCurrentTime} seconds={-30} order={1}>
+						<ForwardButton onChangeCurrentTime={this.changeCurrentTime} seconds={-10} order={1}>
 							<FaBackward />
 						</ForwardButton>
 						<PlayToggle disabled />
 						<Button onClick={this.onPlayToggle} order={2}>
 							{this.state.paused === true ? <FaPlay /> : <FaPause />}
 						</Button>
-						<ForwardButton onChangeCurrentTime={this.changeCurrentTime} seconds={30} order={3}>
+						<ForwardButton onChangeCurrentTime={this.changeCurrentTime} seconds={10} order={3}>
 							<FaForward />
 						</ForwardButton>
 						<VolumeMenuButton vertical order={4} />
