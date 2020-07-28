@@ -223,7 +223,26 @@ export default class ModernVideoPlayer extends Component {
 			this.subplayer.seek(this.state.currentTime);
 		}, 5000);
 
-		this.player.actions.toggleFullscreen = () => {console.log("prevent full screen video");};
+		// backup the full screen toggle function
+		let fullscreenAction = this.player.actions.toggleFullscreen;
+
+		// prevent fullscreen function by default
+		this.player.actions.toggleFullscreen = () => {
+			if (window.isFullAble) fullscreenAction(); // enable fullscreen if the global variable, isFullAble is true.
+		};
+
+		// get the full screen button in control bar
+		let fullScreenBtn = document.querySelector(".video-react-icon-fullscreen");
+
+		// set the global variable as false when the mouse is outside of full screen button in control bar
+		fullScreenBtn.addEventListener("mouseout", function () {
+			window.isFullAble = false;
+		});
+
+		// set the global variable as true when the mouse is inside of full screen button in control bar
+		fullScreenBtn.addEventListener("mouseover", function () {
+			window.isFullAble = true;
+		});
 	}
 
 	componentDidUpdate (prevProps, prevState) {
