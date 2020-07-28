@@ -16,6 +16,7 @@ import { isMobile } from "react-device-detect";
 import { VideoInfoService } from "../core/services/video-info.service";
 import { getVideoId } from "../common/utils/getVideoId.utils";
 import classNames from "classnames";
+import { getFormattedTime } from "../common/utils/getFormatter.utils";
 
 export default class ModernVideoPlayer extends Component {
 	constructor (props, context) {
@@ -34,6 +35,7 @@ export default class ModernVideoPlayer extends Component {
 			bookmark: [],
 			paused: true,
 			streamMode: false,
+			submitMemo: "",
 			noteModal: false,
 			resolution: 0,
 			currentTime: 0,
@@ -260,7 +262,6 @@ export default class ModernVideoPlayer extends Component {
 		}
 	}
 
-
 	changeStreamMode () {
 		if (this.state.streamMode === false) {
 			if (this.player.video.video.classList.contains("mainSingleMode")) {
@@ -320,28 +321,43 @@ export default class ModernVideoPlayer extends Component {
 		this.setState({ paused: !this.state.paused });
 	}
 
-	addBookmark (type, position, markedTime) {
+	addBookmark (type, position, markedTime, comment) {
 		const bookmark = this.state.bookmark;
-		this.setState({ bookmark: [...bookmark, { type, position, markedTime }] });
+		this.setState({ bookmark: [...bookmark, { type, position, markedTime, comment }] });
+		let bookmark_type = "";
+		switch (type) {
+			case "important":
+				bookmark_type = "s";
+				break;
+			case "question":
+				bookmark_type = "q";
+				break;
+			case "note":
+				bookmark_type = "c";
+				break;
+			default:
+				break;
+		}
+		VideoInfoService.instance.sendAddBookmark(this.state.uid, this.state.video_id, bookmark_type, comment, getFormattedTime(markedTime))
+			.then(result => console.log(result));
 	}
 
 	addBookmarkImportant () {
 		const { player } = this.player.getState();
 		let width = 20 + 60 * player.currentTime / player.duration;
-		console.log(player.currentTime);
-		this.addBookmark("important", width + "%", player.currentTime);
+		this.addBookmark("important", width + "%", player.currentTime, "");
 	}
 
 	addBookmarkQuestion () {
 		const { player } = this.player.getState();
 		let width = 20 + 60 * player.currentTime / player.duration;
-		this.addBookmark("question", width + "%", player.currentTime);
+		this.addBookmark("question", width + "%", player.currentTime, "");
 	}
 
 	sendNote () {
 		const { player } = this.player.getState();
 		let width = 20 + 60 * player.currentTime / player.duration;
-		this.addBookmark("note", width + "%", player.currentTime);
+		this.addBookmark("note", width + "%", player.currentTime, this.state.submitMemo);
 		this.toggle();
 	}
 
@@ -459,8 +475,7 @@ export default class ModernVideoPlayer extends Component {
 									type="textarea"
 									rows="4"
 									name="message"
-									value={this.state.message}
-									onInput={this.handleInput} />
+									onChange={event$ => this.setState({ submitMemo: event$.target.value })} />
 							</div>
 							<div className="text-center">
 								<MDBBtn color="primary" onClick={this.sendNote}>
