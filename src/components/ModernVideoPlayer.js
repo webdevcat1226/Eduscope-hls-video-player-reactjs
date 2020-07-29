@@ -217,10 +217,14 @@ export default class ModernVideoPlayer extends Component {
 			});
 		});
 
+		this.subplayer.video.props.player.muted = true;
+
 		//synchronize play time of main and sub video play on every 5 seconds.
 		setInterval(() => {
 			this.subplayer.seek(this.player.getState().player.currentTime);
-		}, 5000);
+			this.subplayer.video.props.player.muted = true;
+			console.log(this.subplayer.video.props.player.muted);
+		}, 10);
 
 		// backup the full screen toggle function
 		let fullscreenAction = this.player.actions.toggleFullscreen;
