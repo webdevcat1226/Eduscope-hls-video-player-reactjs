@@ -219,8 +219,7 @@ export default class ModernVideoPlayer extends Component {
 
 		//synchronize play time of main and sub video play on every 5 seconds.
 		setInterval(() => {
-			this.player.seek(this.state.currentTime);
-			this.subplayer.seek(this.state.currentTime);
+			this.subplayer.seek(this.player.getState().player.currentTime);
 		}, 5000);
 
 		// backup the full screen toggle function
