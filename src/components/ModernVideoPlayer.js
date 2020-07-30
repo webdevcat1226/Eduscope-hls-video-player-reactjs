@@ -22,6 +22,7 @@ export default class ModernVideoPlayer extends Component {
 	constructor (props, context) {
 		super(props, context);
 		this.state = {
+			isDualVideo: "none",
 			uid: "",
 			video_id: "",
 			encoded_video_id: "",
@@ -158,6 +159,16 @@ export default class ModernVideoPlayer extends Component {
 			});
 		});
 
+		this.setState({
+			url1: "",
+			url2: "",
+			highUrl1: "",
+			highUrl2: "",
+			lowUrl1: "",
+			lowUrl2: "",
+			isVideoSourceLoaded: false,
+		});
+
 		VideoInfoService.instance.getVideoUrls(getVideoId().encoded_video_id).then(result => {
 			this.setState({
 				// url1: result.video_1_720_m3u8,
@@ -174,6 +185,13 @@ export default class ModernVideoPlayer extends Component {
 				lowUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207_low.m3u8",
 				isVideoSourceLoaded: true,
 			});
+			setTimeout(() => {
+				if (this.state.url2) {
+					this.setState({
+						isDualVideo: "block",
+					});
+				}
+			}, 100);
 		});
 
 		VideoInfoService.instance.getVideoDataViews(getVideoId().video_id).then(result => {
@@ -217,14 +235,10 @@ export default class ModernVideoPlayer extends Component {
 			});
 		});
 
-		this.subplayer.video.props.player.muted = true;
-
 		//synchronize play time of main and sub video play on every 5 seconds.
 		setInterval(() => {
-			this.subplayer.seek(this.player.getState().player.currentTime);
-			this.subplayer.video.props.player.muted = true;
-			console.log(this.subplayer.video.props.player.muted);
-		}, 10);
+			this.subplayer.seek(this.player.video.props.player.currentTime + 0.25);
+		}, 5000);
 
 		// backup the full screen toggle function
 		let fullscreenAction = this.player.actions.toggleFullscreen;
@@ -253,6 +267,59 @@ export default class ModernVideoPlayer extends Component {
 			this.player.seek(this.state.currentTime);
 			this.subplayer.seek(this.state.currentTime);
 		}
+	}
+
+	componentWillUnmount () {
+		this.setState({
+			isDualVideo: "none",
+			uid: "",
+			video_id: "",
+			encoded_video_id: "",
+			url1: "",
+			url2: "",
+			highUrl1: "",
+			highUrl2: "",
+			lowUrl1: "",
+			lowUrl2: "",
+			isVideoSourceLoaded: false,
+			bookmark: [],
+			paused: true,
+			streamMode: false,
+			submitMemo: "",
+			noteModal: false,
+			resolution: 0,
+			currentTime: 0,
+			dataLine1: {
+				labels: [],
+				datasets: [
+					{
+						label: "My First dataset",
+						fill: true,
+						lineTension: 0.3,
+						borderWidth: 0,
+						backgroundColor: "rgba(225, 204,230, .3)",
+						pointBorderWidth: 0,
+						pointRadius: 0,
+						data: [],
+					},
+				],
+			},
+			dataLine2: {
+				labels: [],
+				datasets: [
+					{
+						label: "My First dataset",
+						fill: true,
+						lineTension: 0.3,
+						borderWidth: 0,
+						backgroundColor: "rgba(98,  182, 239,0.4)",
+						pointBorderWidth: 0,
+						pointRadius: 0,
+						data: [],
+					},
+				],
+			},
+		});
 	}
 
 	handleStateChange (state, prevState) {
@@ -412,7 +479,7 @@ export default class ModernVideoPlayer extends Component {
 					onPause={() => this.subplayer.pause()}
 					playsinline={true}
 				>
-					<div id="sub-video-container"
+					<div id="sub-video-container" style={{ display: this.state.isDualVideo }}
 						className={
 							classNames({
 								"ui-widget-content": true,
@@ -429,7 +496,7 @@ export default class ModernVideoPlayer extends Component {
 							autoHide={true}
 							aspectRatio={"16:9"}
 							playsinline={true}
-							muted
+							muted={false}
 						>
 							{
 								this.state.isVideoSourceLoaded && <HLSSource isVideoChild src={this.state.url2} />
