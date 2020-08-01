@@ -6,3 +6,10 @@ export function getFormattedTime (time) {
 	let formattedSeconds = seconds < 10 ? "0" + `${seconds}` : `${seconds}`;
 	return formattedMinutes + ":" + formattedSeconds;
 }
+
+export function getSecondsTime (time) {
+	let timeArray = time.split(":");
+	let min = +timeArray[0];
+	let sec = +timeArray[1];
+	return min * 60 + sec;
+}

@@ -16,7 +16,7 @@ import { isMobile } from "react-device-detect";
 import { VideoInfoService } from "../core/services/video-info.service";
 import { getVideoId } from "../common/utils/getVideoId.utils";
 import classNames from "classnames";
-import { getFormattedTime } from "../common/utils/getFormatter.utils";
+import { getFormattedTime, getSecondsTime } from "../common/utils/getFormatter.utils";
 
 export default class ModernVideoPlayer extends Component {
 	constructor (props, context) {
@@ -185,6 +185,7 @@ export default class ModernVideoPlayer extends Component {
 				lowUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207_low.m3u8",
 				isVideoSourceLoaded: true,
 			});
+
 			setTimeout(() => {
 				if (this.state.url2) {
 					this.setState({
@@ -235,6 +236,30 @@ export default class ModernVideoPlayer extends Component {
 			});
 		});
 
+		VideoInfoService.instance.getLastTenBookmarks().then(result => {
+			result.map(item => {
+				let type = "";
+				switch (item.bookmark_type) {
+					case "q":
+						type = "question";
+						break;
+					case "s":
+						type = "important";
+						break;
+					case "c":
+						type = "note";
+						break;
+					default:
+						break;
+				}
+				let position = 20 + 60 * getSecondsTime(item.vtime);
+				this.setState({
+					bookmark: [...this.state.bookmark, { type: type, position: position, markedTime: getSecondsTime(item.vtime), comment: item.comment }],
+				});
+			});
+			console.log(this.state.bookmark);
+		});
+
 		//synchronize play time of main and sub video play on every 5 seconds.
 		setInterval(() => {
 			this.subplayer.seek(this.player.video.props.player.currentTime + 0.25);
@@ -262,7 +287,7 @@ export default class ModernVideoPlayer extends Component {
 		});
 	}
 
-	componentDidUpdate (prevProps, prevState) {
+	componentDidUpdate (prevProps, prevState, snapshot) {
 		if (this.state.url1 !== prevState.url1) {
 			this.player.seek(this.state.currentTime);
 			this.subplayer.seek(this.state.currentTime);
