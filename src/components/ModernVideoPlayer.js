@@ -169,18 +169,18 @@ export default class ModernVideoPlayer extends Component {
 
 		VideoInfoService.instance.getVideoUrls(getVideoId().encoded_video_id).then(result => {
 			this.setState({
-				url1: result.video_1_720_m3u8,
-				// url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
-				url2: result.video_2_720_m3u8,
-				// url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
-				highUrl1: result.video_1_720_m3u8,
-				// highUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
-				highUrl2: result.video_2_720_m3u8,
-				// highUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
-				lowUrl1: result.video_1_360_m3u8,
-				// lowUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206_low.m3u8",
-				lowUrl2: result.video_2_360_m3u8,
-				// lowUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207_low.m3u8",
+				// url1: result.video_1_720_m3u8,
+				url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
+				// url2: result.video_2_720_m3u8,
+				url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
+				// highUrl1: result.video_1_720_m3u8,
+				highUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
+				// highUrl2: result.video_2_720_m3u8,
+				highUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
+				// lowUrl1: result.video_1_360_m3u8,
+				lowUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206_low.m3u8",
+				// lowUrl2: result.video_2_360_m3u8,
+				lowUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207_low.m3u8",
 				isVideoSourceLoaded: true,
 			});
 
