@@ -149,6 +149,14 @@ export default class ModernVideoPlayer extends Component {
 		this.player.subscribeToStateChange(this.handleStateChange.bind(this));
 
 		this.setState({
+			url1: "",
+			url2: "",
+			highUrl1: "",
+			highUrl2: "",
+			lowUrl1: "",
+			lowUrl2: "",
+			isVideoSourceLoaded: false,
+			bookmark: [],
 			video_id: getVideoId().video_id,
 			encoded_video_id: getVideoId().encoded_video_id,
 		});
@@ -157,16 +165,6 @@ export default class ModernVideoPlayer extends Component {
 			this.setState({
 				uid: result,
 			});
-		});
-
-		this.setState({
-			url1: "",
-			url2: "",
-			highUrl1: "",
-			highUrl2: "",
-			lowUrl1: "",
-			lowUrl2: "",
-			isVideoSourceLoaded: false,
 		});
 
 		VideoInfoService.instance.getVideoUrls(getVideoId().encoded_video_id).then(result => {
@@ -193,6 +191,35 @@ export default class ModernVideoPlayer extends Component {
 					});
 				}
 			}, 100);
+
+			VideoInfoService.instance.getLastTenBookmarks().then(result => {
+				const { player } = this.player.getState();
+				console.log(player.duration);
+				result.map(item => {
+					let type = "";
+					switch (item.bookmark_type) {
+						case "q":
+							type = "question";
+							break;
+						case "s":
+							type = "important";
+							break;
+						case "c":
+							type = "note";
+							break;
+						default:
+							break;
+					}
+					let position = 20 + 60 * getSecondsTime(item.vtime) / player.duration + "%";
+					if (this.state.uid === item.uid && this.state.video_id === item.video_id) {
+						this.setState({
+							bookmark: [...this.state.bookmark, { type: type, position: position, markedTime: getSecondsTime(item.vtime), comment: item.comment }],
+						});
+						console.log(item);
+					}
+				});
+				console.log(this.state.bookmark);
+			});
 		});
 
 		VideoInfoService.instance.getVideoDataViews(getVideoId().video_id).then(result => {
@@ -234,30 +261,6 @@ export default class ModernVideoPlayer extends Component {
 					],
 				},
 			});
-		});
-
-		VideoInfoService.instance.getLastTenBookmarks().then(result => {
-			result.map(item => {
-				let type = "";
-				switch (item.bookmark_type) {
-					case "q":
-						type = "question";
-						break;
-					case "s":
-						type = "important";
-						break;
-					case "c":
-						type = "note";
-						break;
-					default:
-						break;
-				}
-				let position = 20 + 60 * getSecondsTime(item.vtime);
-				this.setState({
-					bookmark: [...this.state.bookmark, { type: type, position: position, markedTime: getSecondsTime(item.vtime), comment: item.comment }],
-				});
-			});
-			console.log(this.state.bookmark);
 		});
 
 		//synchronize play time of main and sub video play on every 5 seconds.
@@ -455,6 +458,7 @@ export default class ModernVideoPlayer extends Component {
 		}
 		VideoInfoService.instance.sendAddBookmark(this.state.uid, this.state.video_id, bookmark_type, comment, getFormattedTime(markedTime))
 			.then(result => console.log(result));
+		console.log(markedTime, position);
 	}
 
 	addBookmarkImportant () {
