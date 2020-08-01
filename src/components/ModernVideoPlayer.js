@@ -13,6 +13,7 @@ import "../components/ModernVideoPlayer.css";
 import LoadingSpinner from "video-react/lib/components/LoadingSpinner";
 import Bezel from "video-react/lib/components/Bezel";
 import { isMobile } from "react-device-detect";
+import { detect } from "detect-browser";
 import { VideoInfoService } from "../core/services/video-info.service";
 import { getVideoId } from "../common/utils/getVideoId.utils";
 import classNames from "classnames";
@@ -22,6 +23,8 @@ export default class ModernVideoPlayer extends Component {
 	constructor (props, context) {
 		super(props, context);
 		this.state = {
+			browser: "",
+			device: "",
 			isDualVideo: "none",
 			uid: "",
 			video_id: "",
@@ -89,11 +92,11 @@ export default class ModernVideoPlayer extends Component {
 		});
 		setTimeout(() => {
 			if (this.state.noteModal) {
-				console.log("Memo bookmark modal opened");
+				// Memo bookmark modal opened
 				this.player.pause();
 				this.subplayer.pause();
 			} else {
-				console.log("Memo bookmark modal closed");
+				// Memo bookmark modal closed
 				this.player.play();
 				this.subplayer.play();
 			}
@@ -148,15 +151,21 @@ export default class ModernVideoPlayer extends Component {
 		this.line2.chartInstance.canvas.setAttribute("style", "");
 		this.player.subscribeToStateChange(this.handleStateChange.bind(this));
 
+		const browserName = detect().name;
+		let browser = "";
+		switch (browserName) {
+			case "chrome":
+				browser = "Google Chrome";
+				break;
+			default:
+				break;
+		}
+
+		let device = isMobile ? "Mobile" : "Desktop";
+
 		this.setState({
-			url1: "",
-			url2: "",
-			highUrl1: "",
-			highUrl2: "",
-			lowUrl1: "",
-			lowUrl2: "",
-			isVideoSourceLoaded: false,
-			bookmark: [],
+			browser,
+			device,
 			video_id: getVideoId().video_id,
 			encoded_video_id: getVideoId().encoded_video_id,
 		});
@@ -195,22 +204,22 @@ export default class ModernVideoPlayer extends Component {
 			VideoInfoService.instance.getLastTenBookmarks().then(result => {
 				const { player } = this.player.getState();
 				result.map(item => {
-					let type = "";
-					switch (item.bookmark_type) {
-						case "q":
-							type = "question";
-							break;
-						case "s":
-							type = "important";
-							break;
-						case "c":
-							type = "note";
-							break;
-						default:
-							break;
-					}
-					let position = 20 + 60 * getSecondsTime(item.vtime) / player.duration + "%";
 					if (this.state.uid === item.uid && this.state.video_id === item.video_id) {
+						let position = 20 + 60 * getSecondsTime(item.vtime) / player.duration + "%";
+						let type = "";
+						switch (item.bookmark_type) {
+							case "q":
+								type = "question";
+								break;
+							case "s":
+								type = "important";
+								break;
+							case "c":
+								type = "note";
+								break;
+							default:
+								break;
+						}
 						this.setState({
 							bookmark: [...this.state.bookmark, { type: type, position: position, markedTime: getSecondsTime(item.vtime), comment: item.comment }],
 						});
@@ -295,56 +304,7 @@ export default class ModernVideoPlayer extends Component {
 	}
 
 	componentWillUnmount () {
-		this.setState({
-			isDualVideo: "none",
-			uid: "",
-			video_id: "",
-			encoded_video_id: "",
-			url1: "",
-			url2: "",
-			highUrl1: "",
-			highUrl2: "",
-			lowUrl1: "",
-			lowUrl2: "",
-			isVideoSourceLoaded: false,
-			bookmark: [],
-			paused: true,
-			streamMode: false,
-			submitMemo: "",
-			noteModal: false,
-			resolution: 0,
-			currentTime: 0,
-			dataLine1: {
-				labels: [],
-				datasets: [
-					{
-						label: "My First dataset",
-						fill: true,
-						lineTension: 0.3,
-						borderWidth: 0,
-						backgroundColor: "rgba(225, 204,230, .3)",
-						pointBorderWidth: 0,
-						pointRadius: 0,
-						data: [],
-					},
-				],
-			},
-			dataLine2: {
-				labels: [],
-				datasets: [
-					{
-						label: "My First dataset",
-						fill: true,
-						lineTension: 0.3,
-						borderWidth: 0,
-						backgroundColor: "rgba(98,  182, 239,0.4)",
-						pointBorderWidth: 0,
-						pointRadius: 0,
-						data: [],
-					},
-				],
-			},
-		});
+
 	}
 
 	handleStateChange (state, prevState) {
