@@ -109,14 +109,16 @@ export class VideoInfoService {
 	}
 
 	reportVideoDataViewsEveryMinute (uid, video_id, video_time) {
-		return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, {
-			params: {
-				key: "vhjgyu456dCT",
-				type: "views",
-				uid,
-				video_id,
-				video_time,
-			},
+		return new Promise(resolve => {
+			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, {
+				params: {
+					key: "vhjgyu456dCT",
+					type: "video_data_view",
+					uid,
+					video_id,
+					video_time,
+				},
+			}).then(axiosResult => resolve(axiosResult.data.result));
 		});
 	}
 }

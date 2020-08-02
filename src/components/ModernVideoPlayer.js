@@ -14,7 +14,6 @@ import LoadingSpinner from "video-react/lib/components/LoadingSpinner";
 import Bezel from "video-react/lib/components/Bezel";
 import { isMobile } from "react-device-detect";
 import { detect } from "detect-browser";
-import publicIp from "public-ip";
 
 import { VideoInfoService } from "../core/services/video-info.service";
 import { getVideoId } from "../common/utils/getVideoId.utils";
@@ -30,7 +29,7 @@ export default class ModernVideoPlayer extends Component {
 			ipAddress: "",
 			isp: "",
 			countryName: "",
-			districtName: "",
+			cityName: "",
 			isDualVideo: "none",
 			uid: "",
 			video_id: "",
@@ -167,31 +166,29 @@ export default class ModernVideoPlayer extends Component {
 			default:
 				break;
 		}
-
 		//get device kind
 		let device = isMobile ? "Mobile" : "Desktop";
-
-		//setting public ip address
-		(async () => {
-			this.setState({ ipAddress: await publicIp.v4() });
-		})();
-
-		//get isp
-		let isp = "Dialog Axiata PLC.";
-
-		//get country name and district name
-		let countryName = "Sri Lanka";
-		let districtName = "Colombo";
 
 		this.setState({
 			browser,
 			device,
-			isp,
-			countryName,
-			districtName,
 			video_id: getVideoId().video_id,
 			encoded_video_id: getVideoId().encoded_video_id,
 		});
+
+		//set country name and city name
+		fetch("https://extreme-ip-lookup.com/json/")
+			.then(res => res.json())
+			.then(response => {
+				console.log(response);
+				this.setState({
+					countryName: response.country,
+					cityName: response.city,
+					ipAddress: response.query,
+					isp: response.isp,
+				});
+			});
+
 
 		VideoInfoService.instance.getUserId().then(result => {
 			this.setState({
@@ -249,9 +246,6 @@ export default class ModernVideoPlayer extends Component {
 					}
 				});
 			});
-
-			VideoInfoService.instance.reportVideoViewsStatics(this.state.uid, this.state.video_id, this.state.browser, this.state.device, this.state.isp, this.state.ipAddress, this.state.districtName, this.state.countryName)
-				.then(response => console.log("reporting status: ", response));
 		});
 
 		VideoInfoService.instance.getVideoDataViews(getVideoId().video_id).then(result => {
@@ -299,6 +293,28 @@ export default class ModernVideoPlayer extends Component {
 		setInterval(() => {
 			this.subplayer.seek(this.player.video.props.player.currentTime + 0.25);
 		}, 5000);
+
+
+		const reportVideoDataViewEveryMinute = () => {
+			VideoInfoService.instance.reportVideoDataViewsEveryMinute(this.state.uid, this.state.video_id, getFormattedTime(this.player.video.props.player.currentTime))
+				.then(response => {
+					console.log(response, getFormattedTime(this.player.video.props.player.currentTime));
+				});
+		};
+
+		let handlePlay = this.player.actions.handlePlay;
+		this.player.actions.handlePlay = () => {
+			handlePlay();
+			//notify when player started
+			if (!this.player.video.props.player.hasStarted) {
+				VideoInfoService.instance.reportVideoViewsStatics(this.state.uid, this.state.video_id, this.state.browser, this.state.device, this.state.isp, this.state.ipAddress, this.state.cityName, this.state.countryName)
+					.then(response => console.log("reporting status: ", response));
+				reportVideoDataViewEveryMinute();
+				setInterval(() => {
+					reportVideoDataViewEveryMinute();
+				}, 60000);
+			}
+		};
 
 		// backup the full screen toggle function
 		let fullscreenAction = this.player.actions.toggleFullscreen;
