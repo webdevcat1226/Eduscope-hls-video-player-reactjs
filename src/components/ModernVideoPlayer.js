@@ -28,6 +28,7 @@ export default class ModernVideoPlayer extends Component {
 			browser: "",
 			device: "",
 			ipAddress: "",
+			isp: "",
 			countryName: "",
 			districtName: "",
 			isDualVideo: "none",
@@ -156,20 +157,7 @@ export default class ModernVideoPlayer extends Component {
 		this.line2.chartInstance.canvas.setAttribute("style", "");
 		this.player.subscribeToStateChange(this.handleStateChange.bind(this));
 
-		(async () => {
-			this.setState({ ipAddress: await publicIp.v4() });
-		})();
-
-		const url = `https://freegeoip.net/json/`;
-		fetch(url)
-			.then((response) => response.json())
-			.then((responseJson) => {
-				console.log(responseJson);
-			})
-			.catch((error) => {
-				console.error(error);
-			});
-
+		//get current browser name
 		const browserName = detect().name;
 		let browser = "";
 		switch (browserName) {
@@ -180,11 +168,27 @@ export default class ModernVideoPlayer extends Component {
 				break;
 		}
 
+		//get device kind
 		let device = isMobile ? "Mobile" : "Desktop";
+
+		//setting public ip address
+		(async () => {
+			this.setState({ ipAddress: await publicIp.v4() });
+		})();
+
+		//get isp
+		let isp = "Dialog Axiata PLC.";
+
+		//get country name and district name
+		let countryName = "Sri Lanka";
+		let districtName = "Colombo";
 
 		this.setState({
 			browser,
 			device,
+			isp,
+			countryName,
+			districtName,
 			video_id: getVideoId().video_id,
 			encoded_video_id: getVideoId().encoded_video_id,
 		});
@@ -245,6 +249,9 @@ export default class ModernVideoPlayer extends Component {
 					}
 				});
 			});
+
+			VideoInfoService.instance.reportVideoViewsStatics(this.state.uid, this.state.video_id, this.state.browser, this.state.device, this.state.isp, this.state.ipAddress, this.state.districtName, this.state.countryName)
+				.then(response => console.log("reporting status: ", response));
 		});
 
 		VideoInfoService.instance.getVideoDataViews(getVideoId().video_id).then(result => {
