@@ -14,6 +14,8 @@ import LoadingSpinner from "video-react/lib/components/LoadingSpinner";
 import Bezel from "video-react/lib/components/Bezel";
 import { isMobile } from "react-device-detect";
 import { detect } from "detect-browser";
+import publicIp from "public-ip";
+
 import { VideoInfoService } from "../core/services/video-info.service";
 import { getVideoId } from "../common/utils/getVideoId.utils";
 import classNames from "classnames";
@@ -25,6 +27,9 @@ export default class ModernVideoPlayer extends Component {
 		this.state = {
 			browser: "",
 			device: "",
+			ipAddress: "",
+			countryName: "",
+			districtName: "",
 			isDualVideo: "none",
 			uid: "",
 			video_id: "",
@@ -150,6 +155,20 @@ export default class ModernVideoPlayer extends Component {
 		}
 		this.line2.chartInstance.canvas.setAttribute("style", "");
 		this.player.subscribeToStateChange(this.handleStateChange.bind(this));
+
+		(async () => {
+			this.setState({ ipAddress: await publicIp.v4() });
+		})();
+
+		const url = `https://freegeoip.net/json/`;
+		fetch(url)
+			.then((response) => response.json())
+			.then((responseJson) => {
+				console.log(responseJson);
+			})
+			.catch((error) => {
+				console.error(error);
+			});
 
 		const browserName = detect().name;
 		let browser = "";
@@ -415,7 +434,6 @@ export default class ModernVideoPlayer extends Component {
 		}
 		VideoInfoService.instance.sendAddBookmark(this.state.uid, this.state.video_id, bookmark_type, comment, getFormattedTime(markedTime))
 			.then(result => console.log(result));
-		console.log(markedTime, position);
 	}
 
 	addBookmarkImportant () {
