@@ -309,7 +309,6 @@ export default class ModernVideoPlayer extends Component {
 			if (!this.player.video.props.player.hasStarted) {
 				VideoInfoService.instance.reportVideoViewsStatics(this.state.uid, this.state.video_id, this.state.browser, this.state.device, this.state.isp, this.state.ipAddress, this.state.cityName, this.state.countryName)
 					.then(response => console.log("Views statistics reported: ", response));
-				reportVideoDataViewEveryMinute();
 				setInterval(() => {
 					reportVideoDataViewEveryMinute();
 				}, 60000);
