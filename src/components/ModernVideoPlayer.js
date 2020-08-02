@@ -298,7 +298,7 @@ export default class ModernVideoPlayer extends Component {
 		const reportVideoDataViewEveryMinute = () => {
 			VideoInfoService.instance.reportVideoDataViewsEveryMinute(this.state.uid, this.state.video_id, getFormattedTime(this.player.video.props.player.currentTime))
 				.then(response => {
-					console.log(response, getFormattedTime(this.player.video.props.player.currentTime));
+					console.log("Video data views reported:", response);
 				});
 		};
 
@@ -308,7 +308,7 @@ export default class ModernVideoPlayer extends Component {
 			//notify when player started
 			if (!this.player.video.props.player.hasStarted) {
 				VideoInfoService.instance.reportVideoViewsStatics(this.state.uid, this.state.video_id, this.state.browser, this.state.device, this.state.isp, this.state.ipAddress, this.state.cityName, this.state.countryName)
-					.then(response => console.log("reporting status: ", response));
+					.then(response => console.log("Views statistics reported: ", response));
 				reportVideoDataViewEveryMinute();
 				setInterval(() => {
 					reportVideoDataViewEveryMinute();
