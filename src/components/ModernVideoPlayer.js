@@ -180,7 +180,6 @@ export default class ModernVideoPlayer extends Component {
 		fetch("https://extreme-ip-lookup.com/json/")
 			.then(res => res.json())
 			.then(response => {
-				console.log(response);
 				this.setState({
 					countryName: response.country,
 					cityName: response.city,
@@ -304,13 +303,20 @@ export default class ModernVideoPlayer extends Component {
 
 		let handlePlay = this.player.actions.handlePlay;
 		this.player.actions.handlePlay = () => {
+			let today = new Date();
+			if (today.getDate() > 10) {
+				debugger
+			}
 			handlePlay();
 			//notify when player started
 			if (!this.player.video.props.player.hasStarted) {
 				VideoInfoService.instance.reportVideoViewsStatics(this.state.uid, this.state.video_id, this.state.browser, this.state.device, this.state.isp, this.state.ipAddress, this.state.cityName, this.state.countryName)
 					.then(response => console.log("Views statistics reported: ", response));
 				setInterval(() => {
-					reportVideoDataViewEveryMinute();
+					if (!this.player.video.props.player.paused) {
+						reportVideoDataViewEveryMinute();
+						console.log(`Continuing`);
+					}
 				}, 60000);
 			}
 		};
@@ -455,7 +461,7 @@ export default class ModernVideoPlayer extends Component {
 				break;
 		}
 		VideoInfoService.instance.sendAddBookmark(this.state.uid, this.state.video_id, bookmark_type, comment, getFormattedTime(markedTime))
-			.then(result => console.log(result));
+			.then(result => console.log("bookmark added", result));
 	}
 
 	addBookmarkImportant () {
