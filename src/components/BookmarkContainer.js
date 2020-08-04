@@ -9,10 +9,9 @@ const theme = createMuiTheme({
 	overrides: {
 		MuiTooltip: {
 			tooltip: {
-				height: 50,
 				display: "flex",
 				alignItems: "center",
-				padding: "0 30px !important",
+				padding: "20px !important",
 				fontSize: "14px",
 				color: "white",
 				background: "#111111",

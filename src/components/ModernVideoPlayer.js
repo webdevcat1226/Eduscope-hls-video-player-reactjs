@@ -219,29 +219,24 @@ export default class ModernVideoPlayer extends Component {
 				}
 			}, 100);
 
-			VideoInfoService.instance.getLastTenBookmarks().then(result => {
+			VideoInfoService.instance.getUserPlayerVideoData(this.state.uid, this.state.video_id).then(result => {
 				const { player } = this.player.getState();
-				result.map(item => {
-					if (this.state.uid === item.uid && this.state.video_id === item.video_id) {
-						let position = 20 + 60 * getSecondsTime(item.vtime) / player.duration + "%";
-						let type = "";
-						switch (item.bookmark_type) {
-							case "q":
-								type = "question";
-								break;
-							case "s":
-								type = "important";
-								break;
-							case "c":
-								type = "note";
-								break;
-							default:
-								break;
-						}
-						this.setState({
-							bookmark: [...this.state.bookmark, { type: type, position: position, markedTime: getSecondsTime(item.vtime), comment: item.comment }],
-						});
-					}
+				let bookmarks = [];
+				let position = 0;
+				if (result.starts[0]) {
+					position = 20 + 60 * getSecondsTime(result.starts[0]) / player.duration + "%";
+					bookmarks.push({ type: "important", position: position, markedTime: getSecondsTime(result.starts[0]), comment: "" });
+				}
+				if (result.question_marks[0]) {
+					position = 20 + 60 * getSecondsTime(result.question_marks[0]) / player.duration + "%";
+					bookmarks.push({ type: "question", position: position, markedTime: getSecondsTime(result.question_marks[0]), comment: "" });
+				}
+				if (result.comments.video_time[0]) {
+					position = 20 + 60 * getSecondsTime(result.comments.video_time[0]) / player.duration + "%";
+					bookmarks.push({ type: "note", position: position, markedTime: getSecondsTime(result.question_marks[0]), comment: result.comments.comment });
+				}
+				this.setState({
+					bookmark: bookmarks,
 				});
 			});
 		});
@@ -465,7 +460,7 @@ export default class ModernVideoPlayer extends Component {
 				break;
 		}
 		VideoInfoService.instance.sendAddBookmark(this.state.uid, this.state.video_id, bookmark_type, comment, getFormattedTime(markedTime))
-			.then(result => console.log("bookmark added", result));
+			.then(result => console.log("bookmark added: ", result));
 	}
 
 	addBookmarkImportant () {
@@ -586,9 +581,12 @@ export default class ModernVideoPlayer extends Component {
 						<Button order={10} onClick={this.resolutionToggle}>
 							{this.state.resolution === 0 ? "Auto" : this.state.resolution === 1 ? "Low" : "High"}
 						</Button>
-						<Button order={11} onClick={this.changeStreamMode}>
-							{this.state.streamMode === false ? <FaWindowRestore /> : <BsLayoutSplit />}
-						</Button>
+						{
+							this.state.isDualVideo === "block" &&
+							<Button order={11} onClick={this.changeStreamMode}>
+								{this.state.streamMode === false ? <FaWindowRestore /> : <BsLayoutSplit />}
+							</Button>
+						}
 						{isMobile === true ? <FullscreenToggle order={12} disabled /> : <FullscreenToggle order={12} />}
 					</ControlBar>
 				</Player>
