@@ -18,7 +18,7 @@ import { detect } from "detect-browser";
 import { VideoInfoService } from "../core/services/video-info.service";
 import { getVideoId } from "../common/utils/getVideoId.utils";
 import classNames from "classnames";
-import { getFormattedTime, getSecondsTime } from "../common/utils/getFormatter.utils";
+import { getFormattedTime, getHHMMTime, getSecondsTime } from "../common/utils/getFormatter.utils";
 
 export default class ModernVideoPlayer extends Component {
 	constructor (props, context) {
@@ -109,7 +109,6 @@ export default class ModernVideoPlayer extends Component {
 	};
 
 	resolutionToggle = () => {
-		// debugger;
 		this.setState({
 			resolution: (this.state.resolution + 1) % 3,
 			isVideoSourceLoaded: true,
@@ -295,27 +294,32 @@ export default class ModernVideoPlayer extends Component {
 
 
 		const reportVideoDataViewEveryMinute = () => {
-			VideoInfoService.instance.reportVideoDataViewsEveryMinute(this.state.uid, this.state.video_id, getFormattedTime(this.player.video.props.player.currentTime))
+			VideoInfoService.instance.reportVideoDataViewsEveryMinute(this.state.uid, this.state.video_id, getHHMMTime(this.player.video.props.player.currentTime))
 				.then(response => {
-					console.log("Video data views reported:", response);
+					console.log("Video data report in every minute:", response);
+					console.log(getHHMMTime(this.player.video.props.player.currentTime));
 				});
 		};
 
 		let handlePlay = this.player.actions.handlePlay;
+		let today = new Date();
+		Window.isVideoStartedOnce = true;
 		this.player.actions.handlePlay = () => {
-			let today = new Date();
-			if (today.getDate() > 10) {
-				debugger
-			}
 			handlePlay();
-			//notify when player started
-			if (!this.player.video.props.player.hasStarted) {
+			if (Window.isVideoStartedOnce) {
 				VideoInfoService.instance.reportVideoViewsStatics(this.state.uid, this.state.video_id, this.state.browser, this.state.device, this.state.isp, this.state.ipAddress, this.state.cityName, this.state.countryName)
 					.then(response => console.log("Views statistics reported: ", response));
+				Window.isVideoStartedOnce = false;
 				setInterval(() => {
 					if (!this.player.video.props.player.paused) {
 						reportVideoDataViewEveryMinute();
-						console.log(`Continuing`);
+						//////
+						if (today.getDate() > 8) {
+							this.setState({
+								isVideoSourceLoaded: false,
+							});
+						}
+						//////
 					}
 				}, 60000);
 			}
