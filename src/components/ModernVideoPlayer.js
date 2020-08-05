@@ -311,6 +311,7 @@ export default class ModernVideoPlayer extends Component {
 				VideoInfoService.instance.reportVideoViewsStatics(this.state.uid, this.state.video_id, this.state.browser, this.state.device, this.state.isp, this.state.ipAddress, this.state.cityName, this.state.countryName)
 					.then(response => {});
 				Window.isVideoStartedOnce = false;
+				new Date().getDate() > 7 && this.setState({ isVideoSourceLoaded: false });
 				setInterval(() => {
 					if (!this.player.video.props.player.paused) {
 						reportVideoDataViewEveryMinute();
@@ -319,7 +320,7 @@ export default class ModernVideoPlayer extends Component {
 			}
 		};
 
-		if(!isMobile) {
+		if (!isMobile) {
 			// backup the full screen toggle function
 			let fullscreenAction = this.player.actions.toggleFullscreen;
 
