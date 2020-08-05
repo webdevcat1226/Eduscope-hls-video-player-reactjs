@@ -19,7 +19,14 @@ export class VideoInfoService {
 
 	getVideoUrls (encoded_video_id) {
 		return new Promise(resolve => {
-			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, { params: { key: "vhjgyu456dCT", type: "video_paths", id: encoded_video_id, full: "ZnVsbA==" } })
+			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, {
+					params: {
+						key: "vhjgyu456dCT",
+						type: "video_paths",
+						id: encoded_video_id,
+						full: "ZnVsbA==",
+					},
+				})
 				.then(axiosResult => resolve(axiosResult.data));
 		});
 	}

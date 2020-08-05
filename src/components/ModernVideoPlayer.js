@@ -218,34 +218,33 @@ export default class ModernVideoPlayer extends Component {
 						isDualVideo: "block",
 					});
 				}
-				console.log(this.state);
-			}, 100);
-
-			VideoInfoService.instance.getUserPlayerVideoData(this.state.uid, this.state.video_id).then(result => {
-				const { player } = this.player.getState();
-				let bookmarks = [];
-				let position = "";
-				let leftPositionNum = 0;
-				if (result.starts[0]) {
-					leftPositionNum = 20 + 60 * getSecondsTime(result.starts[0]) / player.duration;
-					position = `${leftPositionNum}%`;
-					bookmarks.push({ type: "important", position, markedTime: getSecondsTime(result.starts[0]), comment: "" });
-				}
-				if (result.question_marks[0]) {
-					leftPositionNum = 20 + 60 * getSecondsTime(result.question_marks[0]) / player.duration;
-					position = `${leftPositionNum}%`;
-					bookmarks.push({ type: "question", position, markedTime: getSecondsTime(result.question_marks[0]), comment: "" });
-					console.log(position);
-				}
-				if (result.comments.video_time[0]) {
-					leftPositionNum = 20 + 60 * getSecondsTime(result.comments.video_time[0]) / player.duration;
-					position = `${leftPositionNum}%`;
-					bookmarks.push({ type: "note", position, markedTime: getSecondsTime(result.comments.video_time[0]), comment: result.comments.comment });
-				}
-				this.setState({
-					bookmark: bookmarks,
+				VideoInfoService.instance.getUserPlayerVideoData(this.state.uid, this.state.video_id).then(result => {
+					const { player } = this.player.getState();
+					console.log(player.duration);
+					let bookmarks = [];
+					let position = "";
+					let leftPositionNum = 0;
+					if (result.starts[0]) {
+						leftPositionNum = 20 + 60 * getSecondsTime(result.starts[0]) / player.duration;
+						position = leftPositionNum.toString() + "%";
+						bookmarks.push({ type: "important", position, markedTime: getSecondsTime(result.starts[0]), comment: "" });
+					}
+					if (result.question_marks[0]) {
+						leftPositionNum = 20 + 60 * getSecondsTime(result.question_marks[0]) / player.duration;
+						position = leftPositionNum.toString() + "%";
+						bookmarks.push({ type: "question", position, markedTime: getSecondsTime(result.question_marks[0]), comment: "" });
+					}
+					if (result.comments.video_time[0]) {
+						leftPositionNum = 20 + 60 * getSecondsTime(result.comments.video_time[0]) / player.duration;
+						position = leftPositionNum.toString() + "%";
+						bookmarks.push({ type: "note", position, markedTime: getSecondsTime(result.comments.video_time[0]), comment: result.comments.comment });
+					}
+					this.setState({
+						bookmark: bookmarks,
+					});
 				});
-			});
+			}, 500);
+
 		});
 
 		VideoInfoService.instance.getVideoDataViews(getVideoId().video_id).then(result => {
@@ -295,12 +294,10 @@ export default class ModernVideoPlayer extends Component {
 			VideoInfoService.instance.reportVideoDataViewsEveryMinute(this.state.uid, this.state.video_id, getHHMMTime(this.player.video.props.player.currentTime))
 				.then(response => {
 					console.log("Video data report in every minute:", response);
-					console.log(getHHMMTime(this.player.video.props.player.currentTime));
 				});
 		};
 
 		let handlePlay = this.player.actions.handlePlay;
-		let today = new Date();
 		Window.isVideoStartedOnce = true;
 		this.player.actions.handlePlay = () => {
 			handlePlay();
@@ -311,13 +308,6 @@ export default class ModernVideoPlayer extends Component {
 				setInterval(() => {
 					if (!this.player.video.props.player.paused) {
 						reportVideoDataViewEveryMinute();
-						//////
-						if (today.getDate() > 8) {
-							this.setState({
-								isVideoSourceLoaded: false,
-							});
-						}
-						//////
 					}
 				}, 60000);
 			}
@@ -469,19 +459,22 @@ export default class ModernVideoPlayer extends Component {
 	addBookmarkImportant () {
 		const { player } = this.player.getState();
 		let width = 20 + 60 * player.currentTime / player.duration;
-		this.addBookmark("important", `${width}%`, player.currentTime, "");
+		let position = width.toString() + "%";
+		this.addBookmark("important", position, player.currentTime, "");
 	}
 
 	addBookmarkQuestion () {
 		const { player } = this.player.getState();
 		let width = 20 + 60 * player.currentTime / player.duration;
-		this.addBookmark("question", `${width}%`, player.currentTime, "");
+		let position = width.toString() + "%";
+		this.addBookmark("question", position, player.currentTime, "");
 	}
 
 	sendNote () {
 		const { player } = this.player.getState();
 		let width = 20 + 60 * player.currentTime / player.duration;
-		this.addBookmark("note", `${width}%`, player.currentTime, this.state.submitMemo);
+		let position = width.toString() + "%";
+		this.addBookmark("note", position, player.currentTime, this.state.submitMemo);
 		this.toggle();
 	}
 
