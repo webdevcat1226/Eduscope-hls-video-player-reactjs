@@ -195,19 +195,20 @@ export default class ModernVideoPlayer extends Component {
 		});
 
 		VideoInfoService.instance.getVideoUrls(getVideoId().encoded_video_id).then(result => {
+			console.log(result);
 			this.setState({
-				// url1: result.video_1_720_m3u8,
-				url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
-				// url2: result.video_2_720_m3u8,
-				url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
-				// highUrl1: result.video_1_720_m3u8,
-				highUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
-				// highUrl2: result.video_2_720_m3u8,
-				highUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
-				// lowUrl1: result.video_1_360_m3u8,
-				lowUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206_low.m3u8",
-				// lowUrl2: result.video_2_360_m3u8,
-				lowUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207_low.m3u8",
+				url1: result.video_1_720_m3u8,
+				// url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
+				url2: result.video_2_720_m3u8,
+				// url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
+				highUrl1: result.video_1_720_m3u8,
+				// highUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
+				highUrl2: result.video_2_720_m3u8,
+				// highUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
+				lowUrl1: result.video_1_360_m3u8,
+				// lowUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206_low.m3u8",
+				lowUrl2: result.video_2_360_m3u8,
+				// lowUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207_low.m3u8",
 				isVideoSourceLoaded: true,
 			});
 
@@ -217,6 +218,7 @@ export default class ModernVideoPlayer extends Component {
 						isDualVideo: "block",
 					});
 				}
+				console.log(this.state);
 			}, 100);
 
 			VideoInfoService.instance.getUserPlayerVideoData(this.state.uid, this.state.video_id).then(result => {
@@ -226,19 +228,19 @@ export default class ModernVideoPlayer extends Component {
 				let leftPositionNum = 0;
 				if (result.starts[0]) {
 					leftPositionNum = 20 + 60 * getSecondsTime(result.starts[0]) / player.duration;
-					position = leftPositionNum.toString() + "%";
+					position = `${leftPositionNum}%`;
 					bookmarks.push({ type: "important", position, markedTime: getSecondsTime(result.starts[0]), comment: "" });
-					console.log(position, result.starts[0], getSecondsTime(result.starts[0]), player.duration);
 				}
 				if (result.question_marks[0]) {
-					position = 20 + 60 * getSecondsTime(result.question_marks[0]) / player.duration + "%";
+					leftPositionNum = 20 + 60 * getSecondsTime(result.question_marks[0]) / player.duration;
+					position = `${leftPositionNum}%`;
 					bookmarks.push({ type: "question", position, markedTime: getSecondsTime(result.question_marks[0]), comment: "" });
 					console.log(position);
 				}
 				if (result.comments.video_time[0]) {
-					position = 20 + 60 * getSecondsTime(result.comments.video_time[0]) / player.duration + "%";
-					bookmarks.push({ type: "note", position, markedTime: getSecondsTime(result.question_marks[0]), comment: result.comments.comment });
-					console.log(position);
+					leftPositionNum = 20 + 60 * getSecondsTime(result.comments.video_time[0]) / player.duration;
+					position = `${leftPositionNum}%`;
+					bookmarks.push({ type: "note", position, markedTime: getSecondsTime(result.comments.video_time[0]), comment: result.comments.comment });
 				}
 				this.setState({
 					bookmark: bookmarks,
@@ -247,12 +249,8 @@ export default class ModernVideoPlayer extends Component {
 		});
 
 		VideoInfoService.instance.getVideoDataViews(getVideoId().video_id).then(result => {
-			let dataLineLabels = [];
-			let dataSets = [];
-			result.views.map(item => {
-				dataLineLabels.push("");
-				dataSets.push(item);
-			});
+			let dataLineLabels = result.views.map(_ => "");
+			let dataSets = [...result.views];
 			this.setState({
 				dataLine1: {
 					labels: dataLineLabels,
@@ -471,19 +469,19 @@ export default class ModernVideoPlayer extends Component {
 	addBookmarkImportant () {
 		const { player } = this.player.getState();
 		let width = 20 + 60 * player.currentTime / player.duration;
-		this.addBookmark("important", width.toString() + "%", player.currentTime, "");
+		this.addBookmark("important", `${width}%`, player.currentTime, "");
 	}
 
 	addBookmarkQuestion () {
 		const { player } = this.player.getState();
 		let width = 20 + 60 * player.currentTime / player.duration;
-		this.addBookmark("question", width.toString() + "%", player.currentTime, "");
+		this.addBookmark("question", `${width}%`, player.currentTime, "");
 	}
 
 	sendNote () {
 		const { player } = this.player.getState();
 		let width = 20 + 60 * player.currentTime / player.duration;
-		this.addBookmark("note", width.toString() + "%", player.currentTime, this.state.submitMemo);
+		this.addBookmark("note", `${width}%`, player.currentTime, this.state.submitMemo);
 		this.toggle();
 	}
 
