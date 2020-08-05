@@ -218,33 +218,43 @@ export default class ModernVideoPlayer extends Component {
 						isDualVideo: "block",
 					});
 				}
-				VideoInfoService.instance.getUserPlayerVideoData(this.state.uid, this.state.video_id).then(result => {
-					const { player } = this.player.getState();
-					console.log(player.duration);
-					let bookmarks = [];
-					let position = "";
-					let leftPositionNum = 0;
-					if (result.starts[0]) {
-						leftPositionNum = 20 + 60 * getSecondsTime(result.starts[0]) / player.duration;
-						position = leftPositionNum.toString() + "%";
-						bookmarks.push({ type: "important", position, markedTime: getSecondsTime(result.starts[0]), comment: "" });
-					}
-					if (result.question_marks[0]) {
-						leftPositionNum = 20 + 60 * getSecondsTime(result.question_marks[0]) / player.duration;
-						position = leftPositionNum.toString() + "%";
-						bookmarks.push({ type: "question", position, markedTime: getSecondsTime(result.question_marks[0]), comment: "" });
-					}
-					if (result.comments.video_time[0]) {
-						leftPositionNum = 20 + 60 * getSecondsTime(result.comments.video_time[0]) / player.duration;
-						position = leftPositionNum.toString() + "%";
-						bookmarks.push({ type: "note", position, markedTime: getSecondsTime(result.comments.video_time[0]), comment: result.comments.comment });
-					}
-					this.setState({
-						bookmark: bookmarks,
-					});
-				});
-			}, 500);
+			}, 100);
 
+			Window.isPlayerValuable = false;
+			Window.onceCheckedPlayer = false;
+			setInterval(() => {
+				const { player } = this.player.getState();
+				if (!Window.onceCheckedPlayer && player.duration) {
+					Window.isPlayerValuable = true;
+				}
+				if (Window.isPlayerValuable && !Window.onceCheckedPlayer) {
+					VideoInfoService.instance.getUserPlayerVideoData(this.state.uid, this.state.video_id).then(result => {
+						console.log(player.duration);
+						let bookmarks = [];
+						let position = "";
+						let leftPositionNum = 0;
+						if (result.starts[0]) {
+							leftPositionNum = 20 + 60 * getSecondsTime(result.starts[0]) / player.duration;
+							position = leftPositionNum.toString() + "%";
+							bookmarks.push({ type: "important", position, markedTime: getSecondsTime(result.starts[0]), comment: "" });
+						}
+						if (result.question_marks[0]) {
+							leftPositionNum = 20 + 60 * getSecondsTime(result.question_marks[0]) / player.duration;
+							position = leftPositionNum.toString() + "%";
+							bookmarks.push({ type: "question", position, markedTime: getSecondsTime(result.question_marks[0]), comment: "" });
+						}
+						if (result.comments.video_time[0]) {
+							leftPositionNum = 20 + 60 * getSecondsTime(result.comments.video_time[0]) / player.duration;
+							position = leftPositionNum.toString() + "%";
+							bookmarks.push({ type: "note", position, markedTime: getSecondsTime(result.comments.video_time[0]), comment: result.comments.comment });
+						}
+						this.setState({
+							bookmark: bookmarks,
+						});
+					});
+					Window.onceCheckedPlayer = true;
+				}
+			}, 100);
 		});
 
 		VideoInfoService.instance.getVideoDataViews(getVideoId().video_id).then(result => {
