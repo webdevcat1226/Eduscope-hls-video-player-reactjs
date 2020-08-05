@@ -195,7 +195,6 @@ export default class ModernVideoPlayer extends Component {
 		});
 
 		VideoInfoService.instance.getVideoUrls(getVideoId().encoded_video_id).then(result => {
-			console.log(result);
 			this.setState({
 				url1: result.video_1_720_m3u8,
 				// url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
@@ -229,7 +228,6 @@ export default class ModernVideoPlayer extends Component {
 				}
 				if (Window.isPlayerValuable && !Window.onceCheckedPlayer) {
 					VideoInfoService.instance.getUserPlayerVideoData(this.state.uid, this.state.video_id).then(result => {
-						console.log(player.duration);
 						let bookmarks = [];
 						let position = "";
 						let leftPositionNum = 0;
@@ -302,9 +300,7 @@ export default class ModernVideoPlayer extends Component {
 
 		const reportVideoDataViewEveryMinute = () => {
 			VideoInfoService.instance.reportVideoDataViewsEveryMinute(this.state.uid, this.state.video_id, getHHMMTime(this.player.video.props.player.currentTime))
-				.then(response => {
-					console.log("Video data report in every minute:", response);
-				});
+				.then(response => {});
 		};
 
 		let handlePlay = this.player.actions.handlePlay;
@@ -313,7 +309,7 @@ export default class ModernVideoPlayer extends Component {
 			handlePlay();
 			if (Window.isVideoStartedOnce) {
 				VideoInfoService.instance.reportVideoViewsStatics(this.state.uid, this.state.video_id, this.state.browser, this.state.device, this.state.isp, this.state.ipAddress, this.state.cityName, this.state.countryName)
-					.then(response => console.log("Views statistics reported: ", response));
+					.then(response => {});
 				Window.isVideoStartedOnce = false;
 				setInterval(() => {
 					if (!this.player.video.props.player.paused) {
@@ -463,7 +459,7 @@ export default class ModernVideoPlayer extends Component {
 				break;
 		}
 		VideoInfoService.instance.sendAddBookmark(this.state.uid, this.state.video_id, bookmark_type, comment, getFormattedTime(markedTime))
-			.then(result => console.log("bookmark added: ", result));
+			.then(result => {});
 	}
 
 	addBookmarkImportant () {
