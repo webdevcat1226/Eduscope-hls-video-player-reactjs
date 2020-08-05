@@ -222,18 +222,23 @@ export default class ModernVideoPlayer extends Component {
 			VideoInfoService.instance.getUserPlayerVideoData(this.state.uid, this.state.video_id).then(result => {
 				const { player } = this.player.getState();
 				let bookmarks = [];
-				let position = 0;
+				let position = "";
+				let leftPositionNum = 0;
 				if (result.starts[0]) {
-					position = 20 + 60 * getSecondsTime(result.starts[0]) / player.duration + "%";
-					bookmarks.push({ type: "important", position: position, markedTime: getSecondsTime(result.starts[0]), comment: "" });
+					leftPositionNum = 20 + 60 * getSecondsTime(result.starts[0]) / player.duration;
+					position = leftPositionNum.toString() + "%";
+					bookmarks.push({ type: "important", position, markedTime: getSecondsTime(result.starts[0]), comment: "" });
+					console.log(position, result.starts[0], getSecondsTime(result.starts[0]), player.duration);
 				}
 				if (result.question_marks[0]) {
 					position = 20 + 60 * getSecondsTime(result.question_marks[0]) / player.duration + "%";
-					bookmarks.push({ type: "question", position: position, markedTime: getSecondsTime(result.question_marks[0]), comment: "" });
+					bookmarks.push({ type: "question", position, markedTime: getSecondsTime(result.question_marks[0]), comment: "" });
+					console.log(position);
 				}
 				if (result.comments.video_time[0]) {
 					position = 20 + 60 * getSecondsTime(result.comments.video_time[0]) / player.duration + "%";
-					bookmarks.push({ type: "note", position: position, markedTime: getSecondsTime(result.question_marks[0]), comment: result.comments.comment });
+					bookmarks.push({ type: "note", position, markedTime: getSecondsTime(result.question_marks[0]), comment: result.comments.comment });
+					console.log(position);
 				}
 				this.setState({
 					bookmark: bookmarks,
@@ -466,19 +471,19 @@ export default class ModernVideoPlayer extends Component {
 	addBookmarkImportant () {
 		const { player } = this.player.getState();
 		let width = 20 + 60 * player.currentTime / player.duration;
-		this.addBookmark("important", width + "%", player.currentTime, "");
+		this.addBookmark("important", width.toString() + "%", player.currentTime, "");
 	}
 
 	addBookmarkQuestion () {
 		const { player } = this.player.getState();
 		let width = 20 + 60 * player.currentTime / player.duration;
-		this.addBookmark("question", width + "%", player.currentTime, "");
+		this.addBookmark("question", width.toString() + "%", player.currentTime, "");
 	}
 
 	sendNote () {
 		const { player } = this.player.getState();
 		let width = 20 + 60 * player.currentTime / player.duration;
-		this.addBookmark("note", width + "%", player.currentTime, this.state.submitMemo);
+		this.addBookmark("note", width.toString() + "%", player.currentTime, this.state.submitMemo);
 		this.toggle();
 	}
 

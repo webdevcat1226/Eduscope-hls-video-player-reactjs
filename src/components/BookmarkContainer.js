@@ -34,6 +34,7 @@ const ColoredLine = ({ bookmarkType, position, markedTime, comment, OnJumpToMark
 		bookmarkIcon = <BsLayoutSplit />;
 	} else {}
 
+	console.log(position);
 	return <div className={className} style={{ left: position }}>
 		<MuiThemeProvider theme={theme}>
 			<Tooltip title={comment && `Saved Note: ${comment}`} placement="top-end">
