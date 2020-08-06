@@ -532,7 +532,7 @@ export default class ModernVideoPlayer extends Component {
 					autoHide={true}
 					onPlay={() => this.subplayer.play()}
 					onPause={() => this.subplayer.pause()}
-					playsinline={true}
+					playsInline={true}
 				>
 					<div id="sub-video-container" style={{ display: this.state.isDualVideo }}
 						className={
