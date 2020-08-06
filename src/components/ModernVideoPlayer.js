@@ -18,7 +18,7 @@ import { detect } from "detect-browser";
 import { VideoInfoService } from "../core/services/video-info.service";
 import { getVideoId } from "../common/utils/getVideoId.utils";
 import classNames from "classnames";
-import { getFormattedTime, getHHMMTime, getSecondsTime } from "../common/utils/getFormatter.utils";
+import { getFormattedTime, getHHMMTime, getSecondsTime } from "../common/utils/getTimeFormatter.utils";
 
 export default class ModernVideoPlayer extends Component {
 	constructor (props, context) {
@@ -196,18 +196,18 @@ export default class ModernVideoPlayer extends Component {
 
 		VideoInfoService.instance.getVideoUrls(getVideoId().encoded_video_id).then(result => {
 			this.setState({
-				url1: result.video_1_720_m3u8,
-				// url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
-				url2: result.video_2_720_m3u8,
-				// url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
-				highUrl1: result.video_1_720_m3u8,
-				// highUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
-				highUrl2: result.video_2_720_m3u8,
-				// highUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
-				lowUrl1: result.video_1_360_m3u8,
-				// lowUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206_low.m3u8",
-				lowUrl2: result.video_2_360_m3u8,
-				// lowUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207_low.m3u8",
+				// url1: result.video_1_720_m3u8,
+				url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
+				// url2: result.video_2_720_m3u8,
+				url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
+				// highUrl1: result.video_1_720_m3u8,
+				highUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
+				// highUrl2: result.video_2_720_m3u8,
+				highUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
+				// lowUrl1: result.video_1_360_m3u8,
+				lowUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206_low.m3u8",
+				// lowUrl2: result.video_2_360_m3u8,
+				lowUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207_low.m3u8",
 				isVideoSourceLoaded: true,
 			});
 
@@ -487,7 +487,7 @@ export default class ModernVideoPlayer extends Component {
 		this.toggle();
 	}
 
-	removeBookMark (type, position) {
+	removeBookMark (type, position, time) {
 		let bookmark = this.state.bookmark;
 		let index = -1;
 		for (let i = 0; i < bookmark.length; i++) {
@@ -500,6 +500,25 @@ export default class ModernVideoPlayer extends Component {
 			bookmark.splice(index, 1);
 		}
 		this.setState({ bookmark });
+
+		let bookmark_type = "";
+		switch (type) {
+			case "important":
+				bookmark_type = "s";
+				break;
+			case "question":
+				bookmark_type = "q";
+				break;
+			case "note":
+				bookmark_type = "c";
+				break;
+			default:
+				break;
+		}
+
+		VideoInfoService.instance.sendRemoveBookmark(this.state.uid, this.state.video_id, bookmark_type, getFormattedTime(time)).then(result => {
+			console.log("removed reporting", result);
+		});
 	}
 
 	render () {

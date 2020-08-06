@@ -37,7 +37,7 @@ const ColoredLine = ({ bookmarkType, position, markedTime, comment, OnJumpToMark
 	return <div className={className} style={{ left: position }}>
 		<MuiThemeProvider theme={theme}>
 			<Tooltip title={comment && `Saved Note: ${comment}`} placement="top-end">
-				<Button className="bookmarkButton" onClick={OnJumpToMarkedPosition(markedTime)} onDoubleClick={() => OnRemoveBookmark(bookmarkType, position)}>
+				<Button className="bookmarkButton" onClick={OnJumpToMarkedPosition(markedTime)} onDoubleClick={() => OnRemoveBookmark(bookmarkType, position, markedTime)}>
 					{bookmarkIcon}
 				</Button>
 			</Tooltip>
