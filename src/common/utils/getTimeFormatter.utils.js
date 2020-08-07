@@ -23,6 +23,8 @@ export function getSecondsTime (time) {
 	let hour = 0;
 	let min = 0;
 	let sec = 0;
+
+	// parameter time would be HH:MM:SS or HH:MM
 	timeArray.forEach((time, index) => {
 		if (index === 0) {
 			hour = +time;
