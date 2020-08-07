@@ -106,4 +106,17 @@ video {
     bottom: 100%;
     padding: 0 0 !important;
     font-size: 15px !important;
+    color: #6c757d !important;
+}
+
+.bookmarkButton:hover {
+    color: white !important;
+}
+
+.video-react .video-react-play-progress {
+    background: rgb(210,  210, 210) !important;
+}
+
+.video-react .video-react-play-progress::before {
+    color: rgb(230,  230, 230) !important;
 }
