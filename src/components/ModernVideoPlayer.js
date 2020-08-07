@@ -196,18 +196,18 @@ export default class ModernVideoPlayer extends Component {
 
 		VideoInfoService.instance.getVideoUrls(getVideoId().encoded_video_id).then(result => {
 			this.setState({
-				url1: result.video_1_720_m3u8,
-				// url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
-				url2: result.video_2_720_m3u8,
-				// url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
-				highUrl1: result.video_1_720_m3u8,
-				// highUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
-				highUrl2: result.video_2_720_m3u8,
-				// highUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
-				lowUrl1: result.video_1_360_m3u8,
-				// lowUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206_low.m3u8",
-				lowUrl2: result.video_2_360_m3u8,
-				// lowUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207_low.m3u8",
+				// url1: result.video_1_720_m3u8,
+				url1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
+				// url2: result.video_2_720_m3u8,
+				url2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
+				// highUrl1: result.video_1_720_m3u8,
+				highUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206.m3u8",
+				// highUrl2: result.video_2_720_m3u8,
+				highUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207.m3u8",
+				// lowUrl1: result.video_1_360_m3u8,
+				lowUrl1: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3206_low.m3u8",
+				// lowUrl2: result.video_2_360_m3u8,
+				lowUrl2: "http://lvms.eduscopecloud.com/video-store/hls/Tutorial_3207_low.m3u8",
 				isVideoSourceLoaded: true,
 			});
 
@@ -227,7 +227,56 @@ export default class ModernVideoPlayer extends Component {
 					Window.isPlayerValuable = true;
 				}
 				if (Window.isPlayerValuable && !Window.onceCheckedPlayer) {
-					console.log(player);
+					VideoInfoService.instance.getVideoDataViews(getVideoId().video_id).then(result => {
+						let dataLength = Math.round(player.duration / 60);
+						let dataLineLabels = [];
+						let dataSets = [];
+						for (let i = 0; i < dataLength; i++) {
+							dataLineLabels.push("");
+							dataSets.push("0");
+							result.video_time.forEach((time, index) => {
+								if (getSecondsTime(time) / 60 === i) {
+									dataSets.pop();
+									dataSets.push(result.views[index]);
+								}
+							});
+						}
+
+						this.setState({
+							dataLine1: {
+								labels: dataLineLabels,
+								datasets: [
+									{
+										label: "My First dataset",
+										fill: true,
+										lineTension: 0.3,
+										borderWidth: 0,
+										backgroundColor: "rgba(225, 204,230, .3)",
+										pointBorderWidth: 0,
+										pointRadius: 0,
+										data: dataSets,
+									},
+								],
+							},
+							dataLine2: {
+								labels: dataLineLabels,
+								datasets: [
+									{
+										label: "My First dataset",
+										fill: true,
+										lineTension: 0.3,
+										borderWidth: 0,
+										backgroundColor: "rgba(98,  182, 239,0.4)",
+										pointBorderWidth: 0,
+										pointRadius: 0,
+										data: dataSets,
+									},
+								],
+							},
+						});
+					});
+
+
 					VideoInfoService.instance.getUserPlayerVideoData(this.state.uid, this.state.video_id).then(result => {
 						let bookmarks = [];
 						let position = "";
@@ -260,43 +309,6 @@ export default class ModernVideoPlayer extends Component {
 					Window.onceCheckedPlayer = true;
 				}
 			}, 100);
-		});
-
-		VideoInfoService.instance.getVideoDataViews(getVideoId().video_id).then(result => {
-			let dataLineLabels = result.views.map(_ => "");
-			let dataSets = [...result.views];
-			this.setState({
-				dataLine1: {
-					labels: dataLineLabels,
-					datasets: [
-						{
-							label: "My First dataset",
-							fill: true,
-							lineTension: 0.3,
-							borderWidth: 0,
-							backgroundColor: "rgba(225, 204,230, .3)",
-							pointBorderWidth: 0,
-							pointRadius: 0,
-							data: dataSets,
-						},
-					],
-				},
-				dataLine2: {
-					labels: dataLineLabels,
-					datasets: [
-						{
-							label: "My First dataset",
-							fill: true,
-							lineTension: 0.3,
-							borderWidth: 0,
-							backgroundColor: "rgba(98,  182, 239,0.4)",
-							pointBorderWidth: 0,
-							pointRadius: 0,
-							data: dataSets,
-						},
-					],
-				},
-			});
 		});
 
 		//synchronize play time of main and sub video play on every 5 seconds.

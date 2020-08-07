@@ -20,8 +20,17 @@ export function getHHMMTime (time) {
 
 export function getSecondsTime (time) {
 	let timeArray = time.split(":");
-	let hour = +timeArray[0];
-	let min = +timeArray[1];
-	let sec = +timeArray[2];
+	let hour = 0;
+	let min = 0;
+	let sec = 0;
+	timeArray.forEach((time, index) => {
+		if (index === 0) {
+			hour = +time;
+		} else if (index === 1) {
+			min = +time;
+		} else if (index === 2) {
+			sec = +time;
+		}
+	});
 	return hour * 3600 + min * 60 + sec;
 }
