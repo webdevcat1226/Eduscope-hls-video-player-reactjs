@@ -109,6 +109,18 @@ export class VideoInfoService {
 		});
 	}
 
+	getPlayerVideoData (video_id) {
+		return new Promise(resolve => {
+			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, {
+				params: {
+					key: "vhjgyu456dCT",
+					type: "player_video_data_all",
+					video_id,
+				},
+			}).then(axiosResult => resolve(axiosResult.data));
+		});
+	}
+
 	reportVideoViewsStatics (uid, video_id, browser, device, isp, ip, district, country) {
 		return new Promise(resolve => {
 			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, {

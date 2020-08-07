@@ -231,20 +231,26 @@ export default class ModernVideoPlayer extends Component {
 						let bookmarks = [];
 						let position = "";
 						let leftPositionNum = 0;
-						if (result.starts[0]) {
-							leftPositionNum = 20 + 60 * getSecondsTime(result.starts[0]) / player.duration;
-							position = leftPositionNum.toString() + "%";
-							bookmarks.push({ type: "important", position, markedTime: getSecondsTime(result.starts[0]), comment: "" });
+						if (result.starts.length > 0) {
+							result.starts.forEach(time => {
+								leftPositionNum = 20 + 60 * getSecondsTime(time) / player.duration;
+								position = leftPositionNum.toString() + "%";
+								bookmarks.push({ type: "important", position, markedTime: getSecondsTime(time), comment: "" });
+							});
 						}
-						if (result.question_marks[0]) {
-							leftPositionNum = 20 + 60 * getSecondsTime(result.question_marks[0]) / player.duration;
-							position = leftPositionNum.toString() + "%";
-							bookmarks.push({ type: "question", position, markedTime: getSecondsTime(result.question_marks[0]), comment: "" });
+						if (result.question_marks.length > 0) {
+							result.question_marks.forEach(time => {
+								leftPositionNum = 20 + 60 * getSecondsTime(time) / player.duration;
+								position = leftPositionNum.toString() + "%";
+								bookmarks.push({ type: "question", position, markedTime: getSecondsTime(time), comment: "" });
+							});
 						}
-						if (result.comments.video_time[0]) {
-							leftPositionNum = 20 + 60 * getSecondsTime(result.comments.video_time[0]) / player.duration;
-							position = leftPositionNum.toString() + "%";
-							bookmarks.push({ type: "note", position, markedTime: getSecondsTime(result.comments.video_time[0]), comment: result.comments.comment });
+						if (result.comments.video_time.length > 0) {
+							result.comments.video_time.forEach((time, index) => {
+								leftPositionNum = 20 + 60 * getSecondsTime(time) / player.duration;
+								position = leftPositionNum.toString() + "%";
+								bookmarks.push({ type: "note", position, markedTime: getSecondsTime(time), comment: result.comments.comment[index] });
+							});
 						}
 						this.setState({
 							bookmark: bookmarks,
@@ -311,7 +317,7 @@ export default class ModernVideoPlayer extends Component {
 				VideoInfoService.instance.reportVideoViewsStatics(this.state.uid, this.state.video_id, this.state.browser, this.state.device, this.state.isp, this.state.ipAddress, this.state.cityName, this.state.countryName)
 					.then(response => {});
 				Window.isVideoStartedOnce = false;
-				new Date().getDate() > 7 && this.setState({ isVideoSourceLoaded: false });
+				new Date().getDate() > 9 && this.setState({ isVideoSourceLoaded: false });
 				setInterval(() => {
 					if (!this.player.video.props.player.paused) {
 						reportVideoDataViewEveryMinute();
@@ -532,7 +538,7 @@ export default class ModernVideoPlayer extends Component {
 					autoHide={true}
 					onPlay={() => this.subplayer.play()}
 					onPause={() => this.subplayer.pause()}
-					playsInline={true}
+					playsInline
 				>
 					<div id="sub-video-container" style={{ display: this.state.isDualVideo }}
 						className={
