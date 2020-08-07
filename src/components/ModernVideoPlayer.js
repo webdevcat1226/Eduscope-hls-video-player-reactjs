@@ -227,6 +227,7 @@ export default class ModernVideoPlayer extends Component {
 					Window.isPlayerValuable = true;
 				}
 				if (Window.isPlayerValuable && !Window.onceCheckedPlayer) {
+					console.log(player);
 					VideoInfoService.instance.getUserPlayerVideoData(this.state.uid, this.state.video_id).then(result => {
 						let bookmarks = [];
 						let position = "";
@@ -556,7 +557,7 @@ export default class ModernVideoPlayer extends Component {
 							}}
 							autoHide={true}
 							aspectRatio={"16:9"}
-							playsinline={true}
+							playsInline
 							muted={false}
 						>
 							{
