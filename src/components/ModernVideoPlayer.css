@@ -9,7 +9,7 @@
     }
 
     .App .btn {
-        padding: 0.2rem 0.2rem;
+        padding: 0.35rem;
     }
 }
 
@@ -70,7 +70,7 @@ video {
 .App .mainPlayer .subSingleMode {
     position: absolute;
     top: 15%;
-    left: 75%;
+    left: 74%;
     width: 25%;
     z-index: 999 !important;
 }
