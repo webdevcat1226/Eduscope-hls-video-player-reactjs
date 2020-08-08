@@ -114,9 +114,34 @@ video {
 }
 
 .video-react .video-react-play-progress {
-    background: rgba(255,  0, 0, 0.7) !important;
+    background: rgba(255, 0, 0, 0.7) !important;
 }
 
 .video-react .video-react-play-progress::before {
-    color: rgb(255,  0, 0) !important;
+    color: rgb(255, 0, 0) !important;
+}
+
+.fillButton {
+    pointer-events: none;
+}
+
+button.video-react-button, button.btn-secondary {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+button.video-react-button:hover, button.btn-secondary:hover {
+    color: rgba(255, 255, 255, 0.9) !important;
+    background: #696f77 !important;
+}
+
+button.video-react-button > svg:hover, button.btn-secondary > svg:hover {
+    width: 1.2em;
+    height: 1.3em;
+    color: rgba(255, 255, 255, 1) !important;
+}
+
+button#resolution-stream-button:hover {
+    color: rgba(255, 255, 255, 1) !important;
+    font-weight: 700;
+    width: 44.85px !important;
 }

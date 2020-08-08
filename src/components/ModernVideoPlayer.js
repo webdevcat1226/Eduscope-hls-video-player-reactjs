@@ -620,7 +620,7 @@ export default class ModernVideoPlayer extends Component {
 						<Button order={7} title="Click here to add a bookmark" onClick={this.addBookmarkImportant}><BsFillStarFill /></Button>
 						<Button order={8} title="Click here to add a question mark" onClick={this.addBookmarkQuestion}><BsQuestionCircleFill /></Button>
 						<Button order={9} onClick={this.toggle}><MdSpeakerNotes /></Button>
-						<Button order={10} onClick={this.resolutionToggle}>
+						<Button order={10} onClick={this.resolutionToggle} id="resolution-stream-button">
 							{this.state.resolution === 0 ? "Auto" : this.state.resolution === 1 ? "Low" : "High"}
 						</Button>
 						{
