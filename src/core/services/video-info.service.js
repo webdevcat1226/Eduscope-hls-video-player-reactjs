@@ -2,7 +2,7 @@ import axios from "axios";
 
 export class VideoInfoService {
 	constructor () {
-		this.domainUrl = window.location.hostname;
+		this.domainUrl = `https://${window.location.hostname}`;
 	}
 
 	static _instance;
