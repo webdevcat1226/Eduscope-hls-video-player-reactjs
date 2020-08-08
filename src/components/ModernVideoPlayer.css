@@ -106,11 +106,6 @@ video {
     bottom: 100%;
     padding: 0 0 !important;
     font-size: 15px !important;
-    color: #6c757d !important;
-}
-
-.bookmarkButton:hover {
-    color: white !important;
 }
 
 .video-react .video-react-play-progress {
@@ -144,4 +139,13 @@ button#resolution-stream-button:hover {
     color: rgba(255, 255, 255, 1) !important;
     font-weight: 700;
     width: 44.85px !important;
+}
+
+button.bookmarkButton > svg {
+    color: #6c757d !important;
+}
+
+button.bookmarkButton > svg:hover {
+    width: 15px !important;
+    height: 15px !important;
 }
