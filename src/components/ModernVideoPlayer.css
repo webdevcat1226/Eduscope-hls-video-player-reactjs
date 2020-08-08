@@ -114,9 +114,9 @@ video {
 }
 
 .video-react .video-react-play-progress {
-    background: rgb(210,  210, 210) !important;
+    background: rgba(255,  0, 0, 0.7) !important;
 }
 
 .video-react .video-react-play-progress::before {
-    color: rgb(230,  230, 230) !important;
+    color: rgb(255,  0, 0) !important;
 }
