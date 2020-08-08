@@ -1,6 +1,10 @@
 import axios from "axios";
 
 export class VideoInfoService {
+	constructor () {
+		this.domainUrl = window.location.hostname;
+	}
+
 	static _instance;
 
 	static get instance () {
@@ -12,14 +16,14 @@ export class VideoInfoService {
 
 	getUserId () {
 		return new Promise(resolve => {
-			return axios.post(`https://cloud.eduscope.lk/get_user_details.php`)
+			return axios.post(`${this.domainUrl}/get_user_details.php`)
 				.then(axiosResult => resolve(axiosResult.data.user_id));
 		});
 	}
 
 	getVideoUrls (encoded_video_id) {
 		return new Promise(resolve => {
-			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, {
+			return axios.post(`${this.domainUrl}/webservice.php`, null, {
 					params: {
 						key: "vhjgyu456dCT",
 						type: "video_paths",
@@ -33,14 +37,14 @@ export class VideoInfoService {
 
 	getVideoDataViews (video_id) {
 		return new Promise(resolve => {
-			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, { params: { key: "vhjgyu456dCT", type: "player_video_data_views", video_id: video_id } })
+			return axios.post(`${this.domainUrl}/webservice.php`, null, { params: { key: "vhjgyu456dCT", type: "player_video_data_views", video_id: video_id } })
 				.then(axiosResult => resolve(axiosResult.data));
 		});
 	}
 
 	sendAddBookmark (uid, video_id, bookmark_type, comment, video_time) {
 		return new Promise(resolve => {
-			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, {
+			return axios.post(`${this.domainUrl}/webservice.php`, null, {
 				params: {
 					key: "vhjgyu456dCT",
 					type: "add_bookmark",
@@ -56,7 +60,7 @@ export class VideoInfoService {
 
 	sendRemoveBookmark (uid, video_id, bookmark_type, video_time) {
 		return new Promise(resolve => {
-			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, {
+			return axios.post(`${this.domainUrl}/webservice.php`, null, {
 				params: {
 					key: "vhjgyu456dCT",
 					type: "remove_bookmark",
@@ -71,7 +75,7 @@ export class VideoInfoService {
 
 	sendUpdateBookmarkContent (uid, video_id, bookmark_type, comment, video_time) {
 		return new Promise(resolve => {
-			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, {
+			return axios.post(`${this.domainUrl}/webservice.php`, null, {
 				params: {
 					key: "vhjgyu456dCT",
 					type: "update_bookmark_comment",
@@ -87,7 +91,7 @@ export class VideoInfoService {
 
 	getLastTenBookmarks () {
 		return new Promise(resolve => {
-			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, {
+			return axios.post(`${this.domainUrl}/webservice.php`, null, {
 				params: {
 					key: "vhjgyu456dCT",
 					type: "bookmark_data_set",
@@ -98,7 +102,7 @@ export class VideoInfoService {
 
 	getUserPlayerVideoData (uid, video_id) {
 		return new Promise(resolve => {
-			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, {
+			return axios.post(`${this.domainUrl}/webservice.php`, null, {
 				params: {
 					key: "vhjgyu456dCT",
 					type: "user_player_video_data",
@@ -111,7 +115,7 @@ export class VideoInfoService {
 
 	getPlayerVideoData (video_id) {
 		return new Promise(resolve => {
-			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, {
+			return axios.post(`${this.domainUrl}/webservice.php`, null, {
 				params: {
 					key: "vhjgyu456dCT",
 					type: "player_video_data_all",
@@ -123,7 +127,7 @@ export class VideoInfoService {
 
 	reportVideoViewsStatics (uid, video_id, browser, device, isp, ip, district, country) {
 		return new Promise(resolve => {
-			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, {
+			return axios.post(`${this.domainUrl}/webservice.php`, null, {
 				params: {
 					key: "vhjgyu456dCT",
 					type: "views",
@@ -142,7 +146,7 @@ export class VideoInfoService {
 
 	reportVideoDataViewsEveryMinute (uid, video_id, video_time) {
 		return new Promise(resolve => {
-			return axios.post(`https://cloud.eduscope.lk/webservice.php`, null, {
+			return axios.post(`${this.domainUrl}/webservice.php`, null, {
 				params: {
 					key: "vhjgyu456dCT",
 					type: "video_data_view",

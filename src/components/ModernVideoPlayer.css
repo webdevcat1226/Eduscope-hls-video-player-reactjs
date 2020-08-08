@@ -126,7 +126,7 @@ button.video-react-button, button.btn-secondary {
 
 button.video-react-button:hover, button.btn-secondary:hover {
     color: rgba(255, 255, 255, 0.9) !important;
-    background: #696f77 !important;
+    background: transparent;
 }
 
 button.video-react-button > svg:hover, button.btn-secondary > svg:hover {
@@ -148,4 +148,8 @@ button.bookmarkButton > svg {
 button.bookmarkButton > svg:hover {
     width: 15px !important;
     height: 15px !important;
+}
+
+button.bookmarkButton:hover {
+    background: #696f77 !important;
 }
