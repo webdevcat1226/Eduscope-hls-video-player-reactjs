@@ -153,3 +153,7 @@ button.bookmarkButton > svg:hover {
 button.bookmarkButton:hover {
     background: #696f77 !important;
 }
+
+.video-react .video-react-play-progress:after {
+    font-family: Arial, Helvetica, sans-serif !important;
+}
